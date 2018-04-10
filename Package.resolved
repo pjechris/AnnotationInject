@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Swinject",
+        "repositoryURL": "https://github.com/Swinject/Swinject.git",
+        "state": {
+          "branch": null,
+          "revision": "5ff19b12b17312b6b4d5f23932bf79bed70dd293",
+          "version": "2.4.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
