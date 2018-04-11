@@ -1,0 +1,21 @@
+import Swinject
+
+class AnnotationAssembly: Assembly {
+  func assemble(container: Container) {
+  {% for type in types.all|annotated:"inject" %}
+    {% for init in type.initializers|annotated:"register" %}
+
+      container.register({{type.name}}.self) {
+        {% filter removeNewlines:"leading" %}
+        return {{type.name}}(
+          {% for param in init.parameters %}
+            {{param.argumentLabel}}: $0.resolve()
+            {% ifnot forloop.last %}, {% endif %}
+          {% endfor %}
+        )
+        {% endfilter %}
+      }
+    {% endfor %}
+  {% endfor %}
+  }
+}
