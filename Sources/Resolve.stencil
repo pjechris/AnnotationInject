@@ -1,0 +1,12 @@
+import Swinject
+
+public protocol SafeResolver { }
+
+extension SafeResolver {
+{% for type in types.all|annotated:"inject" %}
+  public func resolve() -> {{type.name}} {
+      return container.resolve({{type.name}}.self)!
+  }
+
+{% endfor %}
+}
