@@ -1,12 +1,36 @@
 import Swinject
 
+{% macro method_decl method %}{% filter removeNewlines:"leading" %}
+    {% for param in method.parameters|annotated:"passthrough" %}
+      {{param.argumentLabel}}: {{param.typeName}}
+      {% ifnot forloop.last %}, {% endif %}
+    {% endfor %}
+{% endfilter %}{% endmacro %}
+
+{% macro method_as_arguments method %}
+  {% for param in method.parameters|annotated:"passthrough" %}
+  {{forlopp.count}}
+    {% if forloop.first and forloop.length > 1 %}
+      , arguments:
+    {% elif forloop.first %}
+      , argument:
+    {% endif %}
+    {{ param.argumentLabel }}
+    {% ifnot forloop.last %}, {% endif %}
+  {% endfor %}
+{% endmacro %}
+
 public protocol SafeResolver { }
 
 extension SafeResolver {
 {% for type in types.all|annotated:"inject" %}
-  public func resolve() -> {{type.name}} {
-      return container.resolve({{type.name}}.self)!
+  {% for init in type.initializers|annotated:"register" %}
+  public func resolve({% call method_decl init %}) -> {{type.name}} {
+    {% filter removeNewlines:"leading" %}
+      return container.resolve({{type.name}}.self{% call method_as_arguments init %})!
+    {% endfilter %}
   }
+  {% endfor %}
 
 {% endfor %}
 }
