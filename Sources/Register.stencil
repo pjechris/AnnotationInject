@@ -1,25 +1,39 @@
 import Swinject
 
 {% macro resolve_param param %}
-  {% if param|annotated:"passthrough" %}arg{{param.name|upperFirstLetter}}{% else %}dep.resolve(){% endif %}
+  {% if param|annotated:"provided" %}arg{{param.name|upperFirstLetter}}{% else %}dep.resolve(){% endif %}
+{% endmacro %}
+
+{% macro register type method %}
+  container.register({{type.name}}.self) { dep{% for param in method.parameters|annotated:"provided" %}, arg{{param.name|upperFirstLetter}}{% endfor %} in
+    {% filter removeNewlines:"leading" %}
+    return {{type.name}}(
+      {% for param in method.parameters %}
+        {{param.argumentLabel}}: {% call resolve_param param %}
+        {% ifnot forloop.last %}, {% endif %}
+      {% endfor %}
+    )
+    {% endfilter %}
+  }
+{% endmacro %}
+
+{% macro register_provider type provider %}
+  container.register({{type.name}}.self, {{provider.definedInTypeName}}.{{provider.selectorName}})
 {% endmacro %}
 
 class AnnotationAssembly: Assembly {
   func assemble(container: Container) {
-  {% for type in types.all|annotated:"inject" %}
-    {% for init in type.initializers|annotated:"register" %}
-
-      container.register({{type.name}}.self) { dep{% for param in init.parameters|annotated:"passthrough" %}, arg{{param.name|upperFirstLetter}}{% endfor %} in
-        {% filter removeNewlines:"leading" %}
-        return {{type.name}}(
-          {% for param in init.parameters %}
-            {{param.argumentLabel}}: {% call resolve_param param %}
-            {% ifnot forloop.last %}, {% endif %}
+    {% for type in types.all|annotated:"inject" %}
+      {% for init in type.initializers|annotated:"register" %}
+        {% for provider in types.all|annotated:"provider" %}
+          {% for method in provider.methods|static where method.callName == "instantiate" and method.returnType.name == type.name %}
+            {% call register_provider type method %}
+          {% empty %}
+            {% call register type init %}
           {% endfor %}
-        )
-        {% endfilter %}
-      }
+        {% endfor %}
+      {% endfor %}
+
     {% endfor %}
-  {% endfor %}
   }
 }
