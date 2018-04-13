@@ -20,16 +20,25 @@ import Swinject
   {% endfor %}
 {% endmacro %}
 
+{% macro add_resolver type method %}
+  public func resolve({% call decl_args method %}) -> {{type.name}} {
+    {% filter removeNewlines:"leading" %}
+      return container.resolve({{type.name}}.self{% call get_arguments method %})!
+    {% endfilter %}
+  }
+{% endmacro %}
+
 public protocol SafeResolver { }
 
 extension SafeResolver {
 {% for type in types.all|annotated:"inject" %}
   {% for init in type.initializers|annotated:"register" %}
-  public func resolve({% call decl_args init %}) -> {{type.name}} {
-    {% filter removeNewlines:"leading" %}
-      return container.resolve({{type.name}}.self{% call get_arguments init %})!
-    {% endfilter %}
-  }
+    {% call add_resolver type init %}
+  {% empty %}
+    {% for init in type.initializers %}
+      {# FIXME: Hack because we can't just take first element of array #}
+      {% if forloop.first %}{% call add_resolver type init %}{% endif %}
+    {% endfor %}
   {% endfor %}
 
 {% endfor %}

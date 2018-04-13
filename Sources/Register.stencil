@@ -1,10 +1,11 @@
 import Swinject
+{% filter removeNewlines %}
 
 {% macro resolve_param param %}
   {% if param|annotated:"provided" %}arg{{param.name|upperFirstLetter}}{% else %}dep.resolve(){% endif %}
 {% endmacro %}
 
-{% macro register type method %}
+{% macro register_in_container type method %}
   container.register({{type.name}}.self) { dep{% for param in method.parameters|annotated:"provided" %}, arg{{param.name|upperFirstLetter}}{% endfor %} in
     {% filter removeNewlines:"leading" %}
     return {{type.name}}(
@@ -17,26 +18,37 @@ import Swinject
   }
 {% endmacro %}
 
-{% macro register_provider type provider %}
+{% macro register_provider_in_container type provider %}
   container.register({{type.name}}.self, {{provider.definedInTypeName}}.{{provider.selectorName}})
 {% endmacro %}
+
+{% macro register type init %}
+  {# stencil limitation: we need to go through all providers methods to find the right one #}
+  {% for provider in types.all|annotated:"provider" %}
+    {% for method in provider.methods|static where method.callName == "instantiate" and method.returnType.name == type.name %}
+      {% call register_provider_in_container type method %}
+    {% empty %}
+      {% call register_in_container type init %}
+    {% endfor %}
+  {% empty %}
+    {% call register_in_container type init %}
+  {% endfor %}
+{% endmacro %}
+
+{% endfilter %}
 
 class AnnotationAssembly: Assembly {
   func assemble(container: Container) {
     {# find all injectable types #}
     {% for type in types.all|annotated:"inject" %}
-
       {# find the init method to register #}
       {% for init in type.initializers|annotated:"register" %}
-
-        {# use a declared provider or do classic injection #}
-        {# stencil limitation: we need to go through all providers methods to find the right one #}
-        {% for provider in types.all|annotated:"provider" %}
-          {% for method in provider.methods|static where method.callName == "instantiate" and method.returnType.name == type.name %}
-            {% call register_provider type method %}
-          {% empty %}
-            {% call register type init %}
-          {% endfor %}
+        {% call register type init %}
+      {% empty %}
+        {# if no init annotated, just use the first one #}
+        {% for init in type.initializers %}
+          {# FIXME: Hack because we can't just take first element of array #}
+          {% if forloop.first %}{% call register type init %}{% endif %}
         {% endfor %}
       {% endfor %}
 
