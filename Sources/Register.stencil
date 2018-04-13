@@ -23,8 +23,14 @@ import Swinject
 
 class AnnotationAssembly: Assembly {
   func assemble(container: Container) {
+    {# find all injectable types #}
     {% for type in types.all|annotated:"inject" %}
+
+      {# find the init method to register #}
       {% for init in type.initializers|annotated:"register" %}
+
+        {# use a declared provider or do classic injection #}
+        {# stencil limitation: we need to go through all providers methods to find the right one #}
         {% for provider in types.all|annotated:"provider" %}
           {% for method in provider.methods|static where method.callName == "instantiate" and method.returnType.name == type.name %}
             {% call register_provider type method %}
