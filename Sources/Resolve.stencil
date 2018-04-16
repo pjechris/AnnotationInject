@@ -10,11 +10,7 @@ import Swinject
 {% macro get_arguments method %}
   {% for param in method.parameters|annotated:"provided" %}
   {{forlopp.count}}
-    {% if forloop.first and forloop.length > 1 %}
-      , arguments:
-    {% elif forloop.first %}
-      , argument:
-    {% endif %}
+    {% if forloop.first %}, arguments:{% endif %}
     {{ param.argumentLabel }}
     {% ifnot forloop.last %}, {% endif %}
   {% endfor %}
@@ -28,9 +24,7 @@ import Swinject
   }
 {% endmacro %}
 
-public protocol SafeResolver { }
-
-extension SafeResolver {
+extension SafeDependencyResolver {
 {% for type in types.all|annotated:"inject" %}
   {% for init in type.initializers|annotated:"register" %}
     {% call add_resolver type init %}

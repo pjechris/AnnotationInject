@@ -2,11 +2,11 @@ import Swinject
 {% filter removeNewlines %}
 
 {% macro resolve_param param %}
-  {% if param|annotated:"provided" %}arg{{param.name|upperFirstLetter}}{% else %}dep.resolve(){% endif %}
+  {% if param|annotated:"provided" %}{{param.name}}{% else %}resolver.resolve(){% endif %}
 {% endmacro %}
 
 {% macro register_in_container type method %}
-  container.register({{type.name}}.self) { dep{% for param in method.parameters|annotated:"provided" %}, arg{{param.name|upperFirstLetter}}{% endfor %} in
+  container.register({{type.name}}.self) { resolver{% for param in method.parameters|annotated:"provided" %}, {{param.name}}{% endfor %} in
     {% filter removeNewlines:"leading" %}
     return {{type.name}}(
       {% for param in method.parameters %}
