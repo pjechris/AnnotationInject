@@ -1,7 +1,10 @@
-/// This protocol defines methods to load dependencies unsafely (no guarantee it's been actually registered)
+/// Defines methods to load dependencies unsafely (no guarantee it's been actually registered)
 public protocol UnsafeDependencyResolver {
-  func resolve<T, U>(_ serviceType: T.Type, arguments: U) -> T
+  func resolve<T>(_ serviceType: T.Type) -> T?
+  func resolve<T, U1>(_ serviceType: T.Type, arguments: U1) -> T?
+  func resolve<T, U1, U2>(_ serviceType: T.Type, arguments: U1, U2) -> T?
+  func resolve<T, U1, U2, U3>(_ serviceType: T.Type, arguments: U1, U2, U3) -> T?
+  func resolve<T, U1, U2, U3, U4>(_ serviceType: T.Type, arguments: U1, U2, U3, U4) -> T?
+  func resolve<T, U1, U2, U3, U4, U5>(_ serviceType: T.Type, arguments: U1, U2, U3, U4, U5) -> T?
+  func resolve<T, U1, U2, U3, U4, U5, U6>(_ serviceType: T.Type, arguments: U1, U2, U3, U4, U5, U6) -> T?
 }
-
-/// This protocol will gain (through source code generation) methods to access registered dependencies
-public protocol SafeDependencyResolver: UnsafeDependencyResolver { }

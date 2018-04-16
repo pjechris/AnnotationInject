@@ -24,6 +24,9 @@ import Swinject
   }
 {% endmacro %}
 
+/// Defines methods to access registered dependencies
+public protocol SafeDependencyResolver: UnsafeDependencyResolver { }
+
 extension SafeDependencyResolver {
 {% for type in types.all|annotated:"inject" %}
   {% for init in type.initializers|annotated:"register" %}
