@@ -1,5 +1,7 @@
 import Swinject
 
+typealias SafeDependencyResolver = Resolver
+
 {% macro decl_args method %}{% filter removeNewlines:"leading" %}
     {% for param in method.parameters|annotated:"provided" %}
       {{param.argumentLabel}}: {{param.typeName}}
@@ -17,16 +19,14 @@ import Swinject
 {% endmacro %}
 
 {% macro add_resolver type method %}
-  public func resolve({% call decl_args method %}) -> {{type.name}} {
+  func resolve({% call decl_args method %}) -> {{type.name}} {
     {% filter removeNewlines:"leading" %}
-      return container.resolve({{type.name}}.self{% call get_arguments method %})!
+      return resolve({{type.name}}.self{% call get_arguments method %})!
     {% endfilter %}
   }
 {% endmacro %}
 
 /// Defines methods to access registered dependencies
-public protocol SafeDependencyResolver: UnsafeDependencyResolver { }
-
 extension SafeDependencyResolver {
 {% for type in types.all|annotated:"inject" %}
   {% for init in type.initializers|annotated:"register" %}
@@ -39,4 +39,10 @@ extension SafeDependencyResolver {
   {% endfor %}
 
 {% endfor %}
+}
+
+extension Resolver {
+  public func resolve<T, U1>(_ serviceType: T.Type, arguments: U1) -> T? {
+    return resolve(serviceType, argument: arguments)
+  }
 }
