@@ -2,7 +2,7 @@
 Generate your dependency injections. Aimed for safety.
 
 |                     | AnnotationInject
-|---------------------|
+|---------------------|--------
 | :statue_of_liberty: | Free you from manually registering your dependencies.
 | ⚡                   | Spend **less time to configure** and more time to code!
 | 🛡                  | **No more runtime crash** because dependency is not up-to-date. Everything is checked at **compile-time**.
