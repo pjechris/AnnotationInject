@@ -2,7 +2,7 @@ import Swinject
 {% filter removeNewlines %}
 
 {% macro resolve_param param %}
-  {% if param|annotated:"provided" %}{{param.name}}{% else %}resolver.resolve(){% endif %}
+  {% if param|annotated:"provided" %}{{param.name}}{% else %}resolver.registeredService(){% endif %}
 {% endmacro %}
 
 {% macro register_in_container type method %}

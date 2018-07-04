@@ -1,6 +1,6 @@
 import Swinject
 
-typealias SafeDependencyResolver = Resolver
+typealias ServiceResolver = Resolver
 
 {% macro decl_args method %}{% filter removeNewlines:"leading" %}
     {% for param in method.parameters|annotated:"provided" %}
@@ -18,8 +18,8 @@ typealias SafeDependencyResolver = Resolver
   {% endfor %}
 {% endmacro %}
 
-{% macro add_resolver type method %}
-  func resolve({% call decl_args method %}) -> {{type.name}} {
+{% macro add_service type method %}
+  func registeredService({% call decl_args method %}) -> {{type.name}} {
     {% filter removeNewlines:"leading" %}
       return resolve({{type.name}}.self{% call get_arguments method %})!
     {% endfilter %}
@@ -27,14 +27,14 @@ typealias SafeDependencyResolver = Resolver
 {% endmacro %}
 
 /// Defines methods to access registered dependencies
-extension SafeDependencyResolver {
+extension ServiceResolver {
 {% for type in types.all|annotated:"inject" %}
   {% for init in type.initializers|annotated:"register" %}
-    {% call add_resolver type init %}
+    {% call add_service type init %}
   {% empty %}
     {% for init in type.initializers %}
       {# FIXME: Hack because we can't just take first element of array #}
-      {% if forloop.first %}{% call add_resolver type init %}{% endif %}
+      {% if forloop.first %}{% call add_service type init %}{% endif %}
     {% endfor %}
   {% endfor %}
 
