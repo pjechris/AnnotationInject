@@ -5,16 +5,22 @@ import Swinject
   {% if param|annotated:"provided" %}{{param.name}}{% else %}resolver.registeredService(){% endif %}
 {% endmacro %}
 
+{% macro init_service service init_method %}{% filter removeNewlines:"leading" %}
+  {{service.name}}(
+    {% for param in init_method.parameters %}
+      {{param.argumentLabel}}: {% call resolve_param param %}
+      {% ifnot forloop.last %}, {% endif %}
+    {% endfor %}
+  )
+{% endfilter %}{% endmacro %}
+
 {% macro register_in_container type method %}
   container.register({{type.name}}.self) { resolver{% for param in method.parameters|annotated:"provided" %}, {{param.name}}{% endfor %} in
-    {% filter removeNewlines:"leading" %}
-    return {{type.name}}(
-      {% for param in method.parameters %}
-        {{param.argumentLabel}}: {% call resolve_param param %}
-        {% ifnot forloop.last %}, {% endif %}
-      {% endfor %}
-    )
-    {% endfilter %}
+    {% for service in method.parameters|!annotated:"provided" where service.type|!annotated:"register" %}
+      #error("missing annotation 'register' on {{service.typeName}}")
+    {% empty %}
+      return {% call init_service type method %}
+    {% endfor %}
   }
 {% endmacro %}
 
