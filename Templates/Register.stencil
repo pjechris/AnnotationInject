@@ -16,8 +16,8 @@ import Swinject
 
 {% macro register_in_container type method %}
   container.register({{type.name}}.self) { resolver{% for param in method.parameters|annotated:"provided" %}, {{param.name}}{% endfor %} in
-    {% for service in method.parameters|!annotated:"provided" where service.type|!annotated:"register" %}
-      #error("missing annotation 'register' on {{service.typeName}}")
+    {% for service in method.parameters|!annotated:"provided" where service.type|!annotated:"inject" %}
+      #error("Parameter '{{service.name}}' cannot be injected: missing annotation 'register' on {{service.typeName}}")
     {% empty %}
       return {% call init_service type method %}
     {% endfor %}
