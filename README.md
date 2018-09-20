@@ -6,11 +6,11 @@ Generate your dependency injections. Aimed for safety.
 | :statue_of_liberty: | Free you from manually registering your dependencies.
 | ⚡                   | Spend **less time to configure** and more time to code!
 | 🛡                  | **No more runtime crash** because dependency is not up-to-date. Everything is checked at **compile-time**.
-| 👐                  | Based on open source tools you like as [Sourcery](https://github.com/krzysztofzablocki/Sourcery) and Swinject.
+| 👐                  | Based on open source tools you like as [Sourcery](https://github.com/krzysztofzablocki/Sourcery) and [Swinject](https://github.com/Swinject/Swinject).
 | :book:              | 100% open source under the MIT license
 
 
-# Why
+# Why?
 ### Without annotations
 Using a dependency injection library (say, Swinject) you need to **remember** to register your dependencies:
 
@@ -69,20 +69,23 @@ container.register(CoffeeMaker) {
 }
 
 extension SafeDependencyResolver {
-  func resolve() -> CoffeeMaker {
+  func registeredService() -> CoffeeMaker {
     return resolve(CoffeeMaker.self)!
   }
 }
 ```
 
-## `register`
-Registers a specific init for injection. When annotation is not provided, 1st one found is used.
+## `inject` (init)
+Registers a specific init for injection.
+
+Default: First one is used.
 
 ```swift
+// sourcery: inject
 class CoffeeMaker {
   init(heater: Heater) { }
 
-  // sourcery: register
+  // sourcery: inject
   convenience init() {
     self.init(heater: CoffeHeater())
   }
@@ -96,7 +99,7 @@ container.register(CoffeeMaker) {
 }
 
 extension SafeDependencyResolver {
-  func resolve() -> CoffeeMaker {
+  func registeredService() -> CoffeeMaker {
     return resolve(CoffeeMaker.self)!
   }
 }
@@ -124,7 +127,7 @@ class AppProvider {
 container.register(CoffeeMaker, factory: AppProvider.instantiate(resolver:))
 
 extension SafeDependencyResolver {
-  func resolve() -> CoffeeMaker {
+  func registeredService() -> CoffeeMaker {
     return resolve(CoffeeMaker.self)!
   }
 }
