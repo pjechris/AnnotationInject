@@ -29,7 +29,7 @@ typealias ServiceResolver = Resolver
 /// Defines methods to access registered dependencies
 extension ServiceResolver {
 {% for type in types.all|annotated:"inject" %}
-  {% for init in type.initializers|annotated:"register" %}
+  {% for init in type.initializers|annotated:"inject" %}
     {% call add_service type init %}
   {% empty %}
     {% for init in type.initializers %}
