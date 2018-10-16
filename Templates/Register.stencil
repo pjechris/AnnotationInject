@@ -14,6 +14,12 @@ import Swinject
   )
 {% endfilter %}{% endmacro %}
 
+{% macro add_register_options type %}
+  {% for key,value in type.annotations.inject where key == "scope" %}
+  .inObjectScope(.{{ value }})
+  {% endfor %}
+{% endmacro %}
+
 {% macro register_in_container type method %}
   container.register({{type.name}}.self) { resolver{% for param in method.parameters|annotated:"provided" %}, {{param.name}}{% endfor %} in
     {% for service in method.parameters|!annotated:"provided" where service.type|!annotated:"inject" %}
@@ -22,10 +28,12 @@ import Swinject
       return {% call init_service type method %}
     {% endfor %}
   }
+  {% call add_register_options type %}
 {% endmacro %}
 
 {% macro register_provider_in_container type provider %}
   container.register({{type.name}}.self, {{provider.definedInTypeName}}.{{provider.selectorName}})
+  {% call add_register_options type %}
 {% endmacro %}
 
 {% macro register type init %}

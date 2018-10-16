@@ -52,10 +52,10 @@ Just copy-paste templates inside a directory and a new `Build phases` inside you
 sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code>
 ```
 
-# Usage
+# Usage / Annotations
 
 ## `inject`
-Declares a class into the dependency injecter.
+Register a class into the dependency container.
 
 ```swift
 /// sourcery: inject
@@ -75,10 +75,26 @@ extension SafeDependencyResolver {
 }
 ```
 
-## `inject` (init)
-Registers a specific init for injection.
+<details>
+  <summary>Options</summary>
+  <p>
+    <dl>
+        <dt>scope</dt>
+        <dd>See <a href="https://github.com/Swinject/Swinject/blob/master/Documentation/ObjectScopes.md">Swinject Object Scopes</a>
+        </dd>
+    </dl>
 
-Default: First one is used.
+  </p>
+
+  ```swift
+  /// sourcery:inject: scope = "weak"
+  class CoffeeMaker { }
+  ```
+</details>
+
+## `inject` (init)
+Registers a specific init for injection. When annotation is not provided, first found is used.
+
 
 ```swift
 // sourcery: inject
