@@ -14,6 +14,14 @@ import Swinject
   )
 {% endfilter %}{% endmacro %}
 
+{% macro inject_attributes service %}
+  .initCompleted { resolver, service in
+    {% for attributeService in service.instanceVariables|annotated:"inject" %}
+      service.{{attributeService.name}} = resolver.registeredService()
+    {% endfor %}
+  }
+{% endmacro %}
+
 {% macro add_register_options type %}
   {% for key,value in type.annotations.inject where key == "scope" %}
   .inObjectScope(.{{ value }})
@@ -28,6 +36,7 @@ import Swinject
       return {% call init_service type method %}
     {% endfor %}
   }
+  {% call inject_attributes type %}
   {% call add_register_options type %}
 {% endmacro %}
 
