@@ -59,11 +59,7 @@ class AnnotationAssembly: Assembly {
       {% for init in type.initializers|annotated:"inject" %}
         {% call register type init %}
       {% empty %}
-        {# if no init annotated, just use the first one #}
-        {% for init in type.initializers %}
-          {# FIXME: Hack because we can't just take first element of array #}
-          {% if forloop.first %}{% call register type init %}{% endif %}
-        {% endfor %}
+        {% call register type type.initializers.first %}
       {% endfor %}
 
     {% endfor %}

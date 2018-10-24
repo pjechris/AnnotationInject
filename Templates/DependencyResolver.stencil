@@ -32,10 +32,7 @@ extension ServiceResolver {
   {% for init in type.initializers|annotated:"inject" %}
     {% call add_service type init %}
   {% empty %}
-    {% for init in type.initializers %}
-      {# FIXME: Hack because we can't just take first element of array #}
-      {% if forloop.first %}{% call add_service type init %}{% endif %}
-    {% endfor %}
+    {% call add_service type type.initializers.first %}
   {% endfor %}
 
 {% endfor %}
