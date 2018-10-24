@@ -10,7 +10,7 @@ Generate your dependency injections. Aimed for safety.
 | :book:              | 100% open source under the MIT license
 
 
-# Why?
+## Why?
 ### Without annotations
 Using a dependency injection library (say, Swinject) you need to **remember** to register your dependencies:
 
@@ -38,7 +38,7 @@ class CoffeeMaker {
 
 This time we'll get a compile time error because we forgot to declare a Heater injection. Houray!
 
-# Installation
+## Installation
 > Note: AnnotationInject depends/relies on Sourcery for annotations declaration, and Swinject as dependency injecter.
 
 - CocoaPods
@@ -52,9 +52,9 @@ Just copy-paste templates inside a directory and a new `Build phases` inside you
 sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code>
 ```
 
-# Usage / Annotations
+## Usage / Annotations
 
-## `inject`
+### `inject`
 Register a class into the dependency container.
 
 ```swift
@@ -62,18 +62,24 @@ Register a class into the dependency container.
 class CoffeeMaker { }
 ```
 
-```swift
-/// Generated code (simplified)
-container.register(CoffeeMaker) {
-  return CoffeeMaker()
-}
+<details>
+  <summary>Generated code</summary>
+  <p>
 
-extension SafeDependencyResolver {
-  func registeredService() -> CoffeeMaker {
-    return resolve(CoffeeMaker.self)!
+  ```swift
+  container.register(CoffeeMaker) {
+    return CoffeeMaker()
   }
-}
-```
+
+  extension SafeDependencyResolver {
+    func registeredService() -> CoffeeMaker {
+      return resolve(CoffeeMaker.self)!
+    }
+  }
+  ```
+
+  </p>
+</details>
 
 <details>
   <summary>Options</summary>
@@ -92,7 +98,7 @@ extension SafeDependencyResolver {
   ```
 </details>
 
-## `inject` (init)
+### `inject` (init)
 Registers a specific init for injection. When annotation is not provided, first found is used.
 
 
@@ -108,20 +114,26 @@ class CoffeeMaker {
 }
 ```
 
-```swift
-/// Generated code (simplified)
-container.register(CoffeeMaker) {
-  return CoffeeMaker()
-}
+<details>
+  <summary>Generated code</summary>
+  <p>
 
-extension SafeDependencyResolver {
-  func registeredService() -> CoffeeMaker {
-    return resolve(CoffeeMaker.self)!
+  ```swift
+  container.register(CoffeeMaker) {
+    return CoffeeMaker()
   }
-}
-```
 
-## `provider`
+  extension SafeDependencyResolver {
+    func registeredService() -> CoffeeMaker {
+      return resolve(CoffeeMaker.self)!
+    }
+  }
+  ```
+
+  </p>
+</details>
+
+### `provider`
 Uses a custom function to register your dependency. It is the same as implementing `container.register` manually while keeping safety.
 Note that provided method **must** be called `instantiate`.
 
@@ -138,17 +150,22 @@ class AppProvider {
 }
 ```
 
-```swift
-/// Generated code (simplified)
-container.register(CoffeeMaker, factory: AppProvider.instantiate(resolver:))
+<details>
+  <summary>Generated code</summary>
+  <p>
 
-extension SafeDependencyResolver {
-  func registeredService() -> CoffeeMaker {
-    return resolve(CoffeeMaker.self)!
+  ```swift
+  container.register(CoffeeMaker, factory: AppProvider.instantiate(resolver:))
+
+  extension SafeDependencyResolver {
+    func registeredService() -> CoffeeMaker {
+      return resolve(CoffeeMaker.self)!
+    }
   }
-}
+  ```
+  
+  </p>
+</details>
 
-```
-
-# License
+## License
 This project is released under the MIT License. Please see the LICENSE file for details.
