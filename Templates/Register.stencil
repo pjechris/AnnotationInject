@@ -60,6 +60,7 @@ import Swinject
 
 {% endfilter %}
 
+// swiftlint: disable all
 class AnnotationAssembly: Assembly {
   func assemble(container: Container) {
     {# find all injectable types #}

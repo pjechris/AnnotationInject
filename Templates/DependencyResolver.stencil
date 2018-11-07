@@ -26,6 +26,7 @@ typealias ServiceResolver = Resolver
   }
 {% endmacro %}
 
+// swiftlint:disable all
 /// Defines methods to access registered dependencies
 extension ServiceResolver {
 {% for type in types.all|annotated:"inject" %}
