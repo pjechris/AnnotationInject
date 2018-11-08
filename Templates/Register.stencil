@@ -24,8 +24,14 @@ import Swinject
 
 {% macro inject_attributes service %}
   .initCompleted { resolver, service in
-    {% for attributeService in service.instanceVariables|annotated:"inject" %}
-      service.{{attributeService.name}} = resolver.registeredService()
+    {% for serviceAttribute in service.instanceVariables|annotated:"inject" %}
+      {% if serviceAttribute.typeName.isOptional == 0 %}
+        #error("'{{service.name}}.{{serviceAttribute.name}}' needs to be optional to be injected")
+      {% elif serviceAttribute.isMutable == 0 %}
+        #error("'{{service.name}}.{{serviceAttribute.name}}' needs to be mutable to be injected")
+      {% else %}
+        service.{{serviceAttribute.name}} = resolver.registeredService()
+      {% endif %}
     {% endfor %}
   }
 {% endmacro %}
