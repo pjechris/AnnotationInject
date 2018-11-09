@@ -43,11 +43,18 @@ This time we'll get a compile time error because we forgot to declare a Heater i
 
 - CocoaPods
 
-TODO
+Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your project:
+```shell
+"$(PODS_ROOT)"/AnnotationInject/Scripts/annotationinject --sources <path to your sources> --output <path to output generated code>
+```
+
+> Note: You can pass all `sourcery` command line options to `annotationinject` script.
 
 - Manually
 
-Just copy-paste templates inside a directory and a new `Build phases` inside your project:
+ 1. Install [Swinject](https://github.com/Swinject/Swinject) and [Sourcery](https://github.com/krzysztofzablocki/Sourcery).
+
+ 2. Copy-paste templates inside a directory and add a new `Build phases` to your project:
 ```shell
 sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code>
 ```
@@ -138,7 +145,7 @@ class CoffeeMaker {
 ### `inject` (attribute)
 Injects an attribute after init. Attribute requires to be marked as Optional (`?` or `!`).
 
-*NOTES: Class still needs to be `inject` annotated.*
+ > Note: Class still needs to be `inject` annotated.
 
 ```swift
 // sourcery: inject
