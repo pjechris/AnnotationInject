@@ -55,7 +55,7 @@ sourcery --templates <path to copied templates> --sources <path to your sources>
 ## Usage / Annotations
 
 ### `inject`
-Register a class into the dependency container.
+Registers a class into the dependency container.
 
 ```swift
 /// sourcery: inject
@@ -67,7 +67,7 @@ class CoffeeMaker { }
   <p>
 
   ```swift
-  container.register(CoffeeMaker) {
+  container.register(CoffeeMaker.self) {
     return CoffeeMaker()
   }
 
@@ -88,19 +88,21 @@ class CoffeeMaker { }
         <dt>scope</dt>
         <dd>See <a href="https://github.com/Swinject/Swinject/blob/master/Documentation/ObjectScopes.md">Swinject Object Scopes</a>
         </dd>
+        <dt>type</dt>
+        <dd>Defines the type on which the class is registered. Use it when you want to resolve against a protocol.
+        </dd>
     </dl>
 
   </p>
 
   ```swift
-  /// sourcery:inject: scope = "weak"
-  class CoffeeMaker { }
+  /// sourcery:inject: scope = "weak", type = "Maker"
+  class CoffeeMaker: Maker { }
   ```
 </details>
 
 ### `inject` (init)
-Registers a specific init for injection. When annotation is not provided, first found is used.
-
+Registers a specific init for injection. If annotation is not provided, first found is used.
 
 ```swift
 // sourcery: inject
@@ -119,7 +121,7 @@ class CoffeeMaker {
   <p>
 
   ```swift
-  container.register(CoffeeMaker) {
+  container.register(CoffeeMaker.self) {
     return CoffeeMaker()
   }
 
@@ -127,6 +129,37 @@ class CoffeeMaker {
     func registeredService() -> CoffeeMaker {
       return resolve(CoffeeMaker.self)!
     }
+  }
+  ```
+
+  </p>
+</details>
+
+### `inject` (attribute)
+Injects an attribute after init. Attribute requires to be marked as Optional (`?` or `!`).
+
+*NOTES: Class still needs to be `inject` annotated.*
+
+```swift
+// sourcery: inject
+class CoffeeMaker {
+  /// sourcery: inject
+  var heater: Heater!
+
+  init() { }
+}
+```
+
+<details>
+  <summary>Generated code</summary>
+  <p>
+
+  ```swift
+  container.register(CoffeeMaker.self) {
+    return CoffeeMaker()
+  }
+  .initCompleted { service, resolver in
+    service.heater = resolver.registeredService()
   }
   ```
 
@@ -163,7 +196,7 @@ class AppProvider {
     }
   }
   ```
-  
+
   </p>
 </details>
 
