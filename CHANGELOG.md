@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+### Fixed
+- Resolver not resolving to `type` option when defined.
+
 ## 0.3.0
 ### Added
 - Register properties using `inject` annotation.

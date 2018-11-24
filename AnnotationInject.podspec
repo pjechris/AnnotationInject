@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                    = "AnnotationInject"
-  s.version                 = "0.3.0"
+  s.version                 = "0.3.1"
   s.source                  = { :git => "https://github.com/akane/AnnotationInject.git",
                                 :tag => s.version.to_s }
 
