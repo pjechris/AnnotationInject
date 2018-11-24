@@ -1,8 +1,9 @@
 # Changelog
 
-## Master
+## 0.3.0
 ### Added
-- Register classes/structs attributes using `inject` annotation.
+- Register properties using `inject` annotation.
+- Register specifying a type (like a protocol) than the class type using `type` option.
 - Disable Swiftlint into generated files.
 - Support for Cocoapods.
 - Changelog file ;)

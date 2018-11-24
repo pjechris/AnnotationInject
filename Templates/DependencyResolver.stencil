@@ -19,12 +19,20 @@ typealias ServiceResolver = Resolver
 {% endmacro %}
 
 {% macro add_service type method %}
-  func registeredService({% call decl_args method %}) -> {{type.name}} {
+  func registeredService({% call decl_args method %}) -> {% call service_type type %} {
     {% filter removeNewlines:"leading" %}
       return resolve({{type.name}}.self{% call get_arguments method %})!
     {% endfilter %}
   }
 {% endmacro %}
+
+{% macro service_type service %}{% filter removeNewlines %}
+  {% for key,value in service.annotations.inject where key == "type" %}
+      {{value}}
+  {% empty%}
+      {{service.name}}
+  {% endfor %}
+{% endfilter %}{% endmacro %}
 
 // swiftlint:disable all
 /// Defines methods to access registered dependencies
