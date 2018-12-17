@@ -15,10 +15,12 @@ Generate your dependency injections. Aimed for safety.
 Using a dependency injection library (say, Swinject) you need to **remember** to register your dependencies:
 
 ```swift
-container.register(CoffeeMaker.self) { r in return CoffeeMaker(heater: r.resolve()!) }
+container.register(CoffeeMaker.self) { r in
+  return CoffeeMaker(heater: r.resolve()!) // Trouble ahead, not sure Heater is in fact registered!
+}
 
 /// later in your code
-let coffeeMaker = container.resolve(CoffeeMaker.self) // trouble ahead!
+let coffeeMaker = container.resolve(CoffeeMaker.self) // crash, missing Heater dependency!
 ```
 
 Running this code we'll get a crash **at runtime**: we didn't register any `heater`, resulting in CoffeeMaker resolver to crash.
@@ -36,7 +38,37 @@ class CoffeeMaker {
 }
 ```
 
-This time we'll get a compile time error because we forgot to declare a Heater injection. Houray!
+This time we'll get a compile time error because we forgot to declare a `Heater` dependency. Houray!
+
+## Usage
+
+### 1. Annotate your dependencies
+```
+/// sourcery: inject
+class CoffeeMaker {
+  init(heater: Heater) { }
+}
+
+/// sourcery: inject
+class Heater {
+    init() { }
+}
+```
+
+### 2. Add a build phase to generate dependencies
+See [Installation](#installation) for more details.
+
+If not all dependencies can be resolved, the build phase will fail, preventing your code from compiling succesfully.
+
+### 3. Add generated files and use generated code
+
+```
+let resolver = Assembler([AnnotationAssembly()]).resolver
+
+// `registeredService` is generated code. It is completely safe at compile time.
+let coffeeMaker = resolver.registeredService() as CoffeeMaker
+let heater = resolver.registeredService() as Heater
+```
 
 ## Installation
 > Note: AnnotationInject depends/relies on Sourcery for annotations declaration, and Swinject as dependency injecter.
@@ -59,7 +91,7 @@ Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your pr
 sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code>
 ```
 
-## Usage / Annotations
+## Available annotations
 
 ### `inject`
 Registers a class into the dependency container.
@@ -110,6 +142,8 @@ class CoffeeMaker { }
 
 ### `inject` (init)
 Registers a specific init for injection. If annotation is not provided, first found is used.
+
+> Note: Class still needs to be `inject` annotated.
 
 ```swift
 // sourcery: inject
