@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.2
+### Fixed
+- Fixed generated code (for registering and resolving) when using `provider` annotation
+
+### Added
+- Added the ability to define imports using `args.imports`.
+
 ## 0.3.1
 ### Fixed
 - Resolver not resolving to `type` option when defined.

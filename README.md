@@ -77,7 +77,7 @@ let heater = resolver.registeredService() as Heater
 
 Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your project:
 ```shell
-"$(PODS_ROOT)"/AnnotationInject/Scripts/annotationinject --sources <path to your sources> --output <path to output generated code>
+"$(PODS_ROOT)"/AnnotationInject/Scripts/annotationinject --sources <path to your sources> --output <path to output generated code> (--args.imports <MyLibs>)
 ```
 
 > Note: You can pass all `sourcery` command line options to `annotationinject` script.
@@ -88,7 +88,7 @@ Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your pr
 
  2. Copy-paste templates inside a directory and add a new `Build phases` to your project:
 ```shell
-sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code>
+sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code> (--args.imports <MyLibs>)
 ```
 
 ## Available annotations
@@ -210,6 +210,8 @@ class CoffeeMaker {
 ### `provider`
 Uses a custom function to register your dependency. It is the same as implementing `container.register` manually while keeping safety.
 Note that provided method **must** be called `instantiate`.
+
+> Note: If you're providing 3rd party libraries (coming from Cocoapods for example), you will need to pass those imports to AnnotationInject using `args.imports MyLib,MyLib2,...` command line argument.
 
 ```swift
 class CoffeeMaker {
