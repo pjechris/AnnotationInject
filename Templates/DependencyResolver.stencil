@@ -45,6 +45,12 @@ extension ServiceResolver {
   {% endfor %}
 
 {% endfor %}
+
+{% for provider in types.all|annotated:"provider" %}
+  {% for method in provider.methods|static where method.callName == "instantiate" %}
+    {% call add_service method.returnType method %}
+  {% endfor %}
+{% endfor %}
 }
 
 extension Resolver {

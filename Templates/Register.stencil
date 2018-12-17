@@ -45,8 +45,8 @@ import Swinject
 {% macro register_in_container service method %}
   {% set serviceType %}{% call service_type service %}{% endset %}
   container.register({{serviceType}}.self) { resolver{% for param in method.parameters|annotated:"provided" %}, {{param.name}}{% endfor %} in
-    {% for service in method.parameters|!annotated:"provided" where service.type|!annotated:"inject" %}
-      #error("Parameter '{{service.name}}' cannot be injected: missing annotation 'inject' on {{service.typeName}}")
+    {% for service in method.parameters|!annotated:"provided" where service|!annotated:"provider" and service.type|!annotated:"inject" %}
+      #error("Missing annotation `inject` on {{service.typeName}} or `provider` on '{{service.name}}' parameter")
     {% empty %}
       return {% call init_service service method %}
     {% endfor %}
@@ -57,21 +57,12 @@ import Swinject
 
 {% macro register_provider_in_container service provider %}
   {% set serviceType %}{% call service_type service %}{% endset %}
-  container.register({{serviceType}}.self, {{provider.definedInTypeName}}.{{provider.selectorName}})
+  container.register({{serviceType}}.self, factory: {{provider.definedInTypeName}}.{{provider.selectorName}})
   {% call add_register_options service %}
 {% endmacro %}
 
 {% macro register service init %}
-  {# stencil limitation: we need to go through all providers methods to find the right one #}
-  {% for provider in types.all|annotated:"provider" %}
-    {% for method in provider.methods|static where method.callName == "instantiate" and method.returnType.name == service.name %}
-      {% call register_provider_in_container service method %}
-    {% empty %}
-      {% call register_in_container service init %}
-    {% endfor %}
-  {% empty %}
-    {% call register_in_container service init %}
-  {% endfor %}
+  {% call register_in_container service init %}
 {% endmacro %}
 
 {% endfilter %}
@@ -88,6 +79,12 @@ class AnnotationAssembly: Assembly {
         {% call register type type.initializers.first %}
       {% endfor %}
 
+    {% endfor %}
+
+    {% for provider in types.all|annotated:"provider" %}
+      {% for method in provider.methods|static where method.callName == "instantiate" %}
+        {% call register_provider_in_container method.returnType method %}
+      {% endfor %}
     {% endfor %}
   }
 }
