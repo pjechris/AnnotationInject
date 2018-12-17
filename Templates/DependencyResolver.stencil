@@ -1,4 +1,5 @@
 import Swinject
+{% for module in argument.imports|split:"," %}import {{module}}{% endfor %}
 
 typealias ServiceResolver = Resolver
 
