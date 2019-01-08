@@ -19,19 +19,19 @@ typealias ServiceResolver = Resolver
   {% endfor %}
 {% endmacro %}
 
-{% macro add_service type method %}
-  func registeredService({% call decl_args method %}) -> {% call service_type type %} {
+{% macro add_service name annotations method %}
+  func registeredService({% call decl_args method %}) -> {% call service_type name annotations %} {
     {% filter removeNewlines:"leading" %}
-      return resolve({{type.name}}.self{% call get_arguments method %})!
+      return resolve({{name}}.self{% call get_arguments method %})!
     {% endfilter %}
   }
 {% endmacro %}
 
-{% macro service_type service %}{% filter removeNewlines %}
-  {% for key,value in service.annotations.inject where key == "type" %}
+{% macro service_type name annotations %}{% filter removeNewlines %}
+  {% for key,value in annotations.inject where key == "type" %}
       {{value}}
   {% empty%}
-      {{service.name}}
+      {{name}}
   {% endfor %}
 {% endfilter %}{% endmacro %}
 
@@ -40,16 +40,16 @@ typealias ServiceResolver = Resolver
 extension ServiceResolver {
 {% for type in types.all|annotated:"inject" %}
   {% for init in type.initializers|annotated:"inject" %}
-    {% call add_service type init %}
+    {% call add_service type.name type.annotations init %}
   {% empty %}
-    {% call add_service type type.initializers.first %}
+    {% call add_service type.name type.annotations type.initializers.first %}
   {% endfor %}
 
 {% endfor %}
 
 {% for provider in types.all|annotated:"provider" %}
   {% for method in provider.methods|static where method.callName == "instantiate" %}
-    {% call add_service method.returnType method %}
+    {% call add_service method.returnTypeName method.returnType.annotations method %}
   {% endfor %}
 {% endfor %}
 }
