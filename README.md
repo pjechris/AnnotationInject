@@ -243,5 +243,14 @@ class AppProvider {
   </p>
 </details>
 
+## Caveats
+_**Generated code does not compile because of missing imports**_
+
+Set `--args.imports <MyLibs>` so that generated code includes 3rd party libraries.
+
+_**Foundation types (URLSession, NSNotificationCenter, ...) are empty (.self) in generated code**_
+
+Sourcery is not yet able to find those types. As such they are seen as non existent. Workaround: Define the surrounded type inside a Provider and give it foundation types.
+
 ## License
 This project is released under the MIT License. Please see the LICENSE file for details.

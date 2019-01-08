@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.3
+### Fixed
+- Fixed issue with generic parameters not defined in register and registered. Note: This works only for providers.
+- Fixed `import` when importing multiple dependencies
+
 ## 0.3.2
 ### Fixed
 - Fixed generated code (for registering and resolving) when using `provider` annotation
