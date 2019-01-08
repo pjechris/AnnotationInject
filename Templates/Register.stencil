@@ -1,5 +1,8 @@
+// swiftlint: disable all
 import Swinject
-{% for module in argument.imports|split:"," %}import {{module}}{% endfor %}
+{% for module in argument.imports|split:"," %}
+import {{module}}
+{% endfor %}
 {% filter removeNewlines %}
 
 {% macro resolve_param param %}
@@ -64,7 +67,6 @@ import Swinject
 
 {% endfilter %}
 
-// swiftlint: disable all
 class AnnotationAssembly: Assembly {
   func assemble(container: Container) {
     {# find all injectable types #}

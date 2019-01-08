@@ -1,5 +1,8 @@
+// swiftlint:disable all
 import Swinject
-{% for module in argument.imports|split:"," %}import {{module}}{% endfor %}
+{% for module in argument.imports|split:"," %}
+import {{module}}
+{% endfor %}
 
 typealias ServiceResolver = Resolver
 
@@ -35,7 +38,6 @@ typealias ServiceResolver = Resolver
   {% endfor %}
 {% endfilter %}{% endmacro %}
 
-// swiftlint:disable all
 /// Defines methods to access registered dependencies
 extension ServiceResolver {
 {% for type in types.all|annotated:"inject" %}
