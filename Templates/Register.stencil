@@ -9,14 +9,6 @@ import {{module}}
   {% if param|annotated:"provided" %}{{param.name}}{% else %}resolver.registeredService(){% endif %}
 {% endmacro %}
 
-{% macro service_type name annotations %}{% filter removeNewlines %}
-  {% for key,value in annotations.inject where key == "type" %}
-      {{value}}
-  {% empty%}
-      {{name}}
-  {% endfor %}
-{% endfilter %}{% endmacro %}
-
 {% macro init_service service init_method %}{% filter removeNewlines:"leading" %}
   {{service.name}}(
     {% for param in init_method.parameters %}
@@ -47,8 +39,7 @@ import {{module}}
 {% endmacro %}
 
 {% macro register service method %}
-  {% set serviceType %}{% call service_type service.name service.annotations %}{% endset %}
-  container.register({{serviceType}}.self) { resolver{% for param in method.parameters|annotated:"provided" %}, {{param.name}}{% endfor %} in
+  container.register({{service.name}}.self) { resolver{% for param in method.parameters|annotated:"provided" %}, {{param.name}}{% endfor %} in
     {% for service in method.parameters|!annotated:"provided" where service|!annotated:"provider" and service.type|!annotated:"inject" %}
       #error("Missing annotation `inject` on {{service.typeName}} or `provider` on '{{service.name}}' parameter")
     {% empty %}
@@ -60,8 +51,7 @@ import {{module}}
 {% endmacro %}
 
 {% macro register_provider service typeName provider %}
-  {% set actualTypeName %}{% call service_type typeName service.annotations %}{% endset %}
-  container.register({{actualTypeName}}.self, factory: {{provider.definedInTypeName}}.{{provider.selectorName}})
+  container.register({{typeName}}.self, factory: {{provider.definedInTypeName}}.{{provider.selectorName}})
   {% call add_register_options service %}
 {% endmacro %}
 
