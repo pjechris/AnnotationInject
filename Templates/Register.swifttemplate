@@ -1,4 +1,5 @@
 import Foundation
+<%- include("Partials/Method.swift") -%>
 <%- include("Partials/MethodParameter.swift") -%>
 <%- include("Partials/Provider.swift") -%>
 <%- include("Partials/String.swift") -%>
@@ -29,8 +30,8 @@ import Foundation
     }
 
     return """
-    { resolver \(prefixNonEmpty(names(of: parameters), with: ","))in
-
+    { resolver \(prefixNonEmpty(concatParamNames(of: parameters), with: ","))in
+            \(method.returnTypeName)(\(concat(parametersWithValue(method))))
         }
     """
   }
