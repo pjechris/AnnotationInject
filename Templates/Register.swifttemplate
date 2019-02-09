@@ -1,0 +1,47 @@
+import Foundation
+<%- include("Partials/MethodParameter.swift") -%>
+<%- include("Partials/Provider.swift") -%>
+<%- include("Partials/String.swift") -%>
+
+<%_
+  func factory(with method: SourceryRuntime.Method?) -> String {
+    guard let method = method else {
+        return "#error(\"No init method found.\")"
+    }
+
+    let parameters = method.parameters.filter { has($0, annotation: "provided") }
+    let services = method.parameters.filter { !parameters.contains($0) }
+    let nonInjectableServices = services.filter { service in
+        return service.type.map { !has($0, annotation: "inject") } ?? false
+        && provider(for: service.typeName) == nil
+    }
+
+    guard nonInjectableServices.isEmpty else {
+        let errors = nonInjectableServices
+        .map { "#error(parameter '\($0.name)' requires \($0.typeName) to be annotated `inject` or have a `provider`.)" }
+
+        return
+        """
+        { _ in
+                \(errors.joined(separator: "\n"))
+            }
+        """
+    }
+
+    return """
+    { resolver \(prefixNonEmpty(names(of: parameters), with: ","))in
+
+        }
+    """
+  }
+-%>
+
+class AnnotationAssembly: Assembly {
+  func assemble(container: Container) {
+  <%_ for service in types.all.filter({ has($0, annotation: "inject") }) { -%>
+    <%_ let initializer = service.initializers.filter { has($0, annotation: "inject") }.first ?? service.initializers.first -%>
+
+    container.register(<%= service.name %>.self, factory: <%= factory(with: initializer) -%>)
+  <%_ } -%>
+  }
+}
