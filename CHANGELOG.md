@@ -1,5 +1,10 @@
 # Changelog
 
+## master
+### Changed
+- Register template is now written in Swift.
+- Annotation `sourcery: provider` in `init` is not needed anymore.
+
 ## 0.3.3
 ### Fixed
 - Fixed issue with generic parameters not defined in register and registered. Note: This works only for providers.
