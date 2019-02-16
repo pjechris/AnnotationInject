@@ -1,7 +1,13 @@
 import Foundation
+<%_ let imports = (arguments["import"] as? String)?.split(separator: ",") ?? [] -%>
+<%_ for `import` in imports { -%>
+import <%= `import` %>
+<%_ } -%>
+
+<%- include("Partials/Annotation.swift") -%>
 <%- include("Partials/Method.swift") -%>
 <%- include("Partials/MethodParameter.swift") -%>
-<%- include("Partials/Provider.swift") -%>
+<%- include("Partials/Service.swift") -%>
 <%- include("Partials/String.swift") -%>
 
 <%_
@@ -14,7 +20,7 @@ import Foundation
     let services = method.parameters.filter { !parameters.contains($0) }
     let nonInjectableServices = services.filter { service in
         return service.type.map { !has($0, annotation: "inject") } ?? false
-        && provider(for: service.typeName) == nil
+        && provider(for: service) == nil
     }
 
     guard nonInjectableServices.isEmpty else {
@@ -35,6 +41,30 @@ import Foundation
         }
     """
   }
+
+  func initCompleted(_ service: Type) -> String? {
+    let (attributes, errors) = attributesAnnotatedInject(service)
+    let attributesStr = attributes.map { "service.\($0.name) = resolver.registeredService()" }
+    let errorsStr = errors.map { "#error(\"\($0)\")"}
+    let afterInit = attributesStr + errorsStr
+
+    if attributes.isEmpty && errors.isEmpty {
+        return nil
+    }
+
+    return """
+    .initCompleted { service, resolver if
+            \(afterInit.joined(separator: "\n       "))
+        }
+    """
+  }
+
+  func serviceOptions(_ service: Type) -> [String?] {
+    return [
+        initCompleted(service),
+        serviceScope(service).map { ".inObjectScope(.\($0))" }
+    ]
+  }
 -%>
 
 class AnnotationAssembly: Assembly {
@@ -43,6 +73,11 @@ class AnnotationAssembly: Assembly {
     <%_ let initializer = service.initializers.filter { has($0, annotation: "inject") }.first ?? service.initializers.first -%>
 
     container.register(<%= service.name %>.self, factory: <%= factory(with: initializer) -%>)
+    <%= serviceOptions(service).compactMap { $0 }.joined(separator: "\n") _%>
+  <%_ } -%>
+
+  <%_ for method in providers() { -%>
+    container.register(<%= method.returnTypeName %>.self, factory: <%= method.definedInTypeName?.name ?? "" %>.<%= method.selectorName %>)
   <%_ } -%>
   }
 }
