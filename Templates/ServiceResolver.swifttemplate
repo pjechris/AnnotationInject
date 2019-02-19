@@ -1,0 +1,43 @@
+import Foundation
+import Swinject
+<%_ let imports = (arguments["import"] as? String)?.split(separator: ",") ?? [] -%>
+<%_ for `import` in imports { -%>
+import <%= `import` %>
+<%_ } -%>
+
+<%- include("Partials/Annotation.swift") -%>
+<%- include("Partials/Method.swift") -%>
+<%- include("Partials/MethodParameter.swift") -%>
+<%- include("Partials/Service.swift") -%>
+<%- include("Partials/String.swift") -%>
+
+typealias ServiceResolver = Resolver
+
+/// Defines methods to *safely* access injected dependencies
+extension ServiceResolver {
+<%_ for service in types.all.filter({ has($0, annotation: "inject") }) { -%>
+    <%_ guard let factory = service.initializers.filter({ has($0, annotation: "inject") }).first ?? service.initializers.first else { -%>
+        #error("No init method found.")
+        <%_ return -%>
+    <%_ } -%>
+    <%_ let parameters = factory.parameters.filter { has($0, annotation: "provided") } -%>
+
+    func registeredService(<%= stringify(parameters: parameters, printing: .definition) %>) -> <%= serviceResolvedType(service) %> {
+        return resolve(<%= service.name %>.self<%= prefixNonEmpty(concatParamNames(of: parameters), with: ", arguments: ") %>)!
+    }
+<%_ } -%>
+
+<%_ for factory in providers() { -%>
+    <%_ let parameters = factory.parameters.filter { has($0, annotation: "provided") } -%>
+
+    func registeredService(<%= stringify(parameters: parameters, printing: .definition) %>) -> <%= factory.returnTypeName %> {
+        return resolve(<%= factory.returnTypeName %>.self<%= prefixNonEmpty(concatParamNames(of: parameters), with: ", arguments: ") %>)!
+    }
+<%_ } -%>
+}
+
+extension Resolver {
+  public func resolve<T, U1>(_ serviceType: T.Type, arguments: U1) -> T? {
+    return resolve(serviceType, argument: arguments)
+  }
+}

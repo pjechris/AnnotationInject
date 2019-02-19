@@ -8,6 +8,15 @@ func serviceScope(_ service: Type) -> String? {
   return injectAnnotation["scope"]
 }
 
+func serviceResolvedType(_ service: Type) -> String {
+    guard let annotation = service.annotations["inject"] as? [String: String],
+          let typeName = annotation["type"] else {
+        return service.name
+    }
+
+    return typeName
+}
+
 func attributesAnnotatedInject(_ service: Type) -> ([Variable], [String]) {
   let annotatedAttributes = service.instanceVariables.filter { has($0, annotation: "inject") }
   var attributes: [Variable] = []
