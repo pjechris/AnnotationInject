@@ -1,8 +1,10 @@
 # Changelog
 
 ## master
+### Breaking changes
+- Templates (register and resolver) are now written in Swift. If you are using Swift Package Manager you can not (yet) use them because of Sourcery. You will need to use 0.3.x versions.
+
 ### Changed
-- Register template is now written in Swift.
 - Annotation `sourcery: provider` in `init` is not needed anymore.
 
 ## 0.3.3
