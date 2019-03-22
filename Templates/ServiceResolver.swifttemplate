@@ -1,6 +1,6 @@
 import Foundation
 import Swinject
-<%_ let imports = (arguments["import"] as? String)?.split(separator: ",") ?? [] -%>
+<%_ let imports = (argument["import"] as? String)?.split(separator: ",") ?? [] -%>
 <%_ for `import` in imports { -%>
 import <%= `import` %>
 <%_ } -%>
@@ -18,7 +18,7 @@ extension ServiceResolver {
 <%_ for service in types.all.filter({ has($0, annotation: "inject") }) { -%>
     <%_ guard let factory = service.initializers.filter({ has($0, annotation: "inject") }).first ?? service.initializers.first else { -%>
         #error("No init method found.")
-        <%_ return -%>
+        <%_ exit(1) -%>
     <%_ } -%>
     <%_ let parameters = factory.parameters.filter { has($0, annotation: "provided") } -%>
 

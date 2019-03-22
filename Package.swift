@@ -20,6 +20,6 @@ let package = Package(
         .target(
             name: "AnnotationInject",
             dependencies: ["Swinject", "SourceryRuntime"],
-            path: "Sources")
+            path: "")
     ]
 )
