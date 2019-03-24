@@ -14,7 +14,11 @@ import <%= `import` %>
 <%_
   func factory(with method: SourceryRuntime.Method?) -> String {
     guard let method = method else {
-        return "#error(\"No init method found.\")"
+        return """
+        { _ in
+            #error(\"No init method found.\")
+            }
+        """
     }
 
     let parameters = method.parameters.filter { has($0, annotation: "provided") }
@@ -37,7 +41,7 @@ import <%= `import` %>
     }
 
     return """
-    { resolver \(prefixNonEmpty(concatParamNames(of: parameters), with: ","))in
+    { resolver\(prefixNonEmpty(concatParamNames(of: parameters), with: ",")) in
             \(method.returnTypeName)(\(concat(parametersWithValue(method))))
         }
     """
