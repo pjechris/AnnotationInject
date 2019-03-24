@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
           "branch": null,
-          "revision": "9a281b1cfa1c53d1e8bd92e1798e4e473af8d263",
-          "version": "7.3.3"
+          "revision": "e9d769113660769a4d9dd3afb855562c0b7ae7b0",
+          "version": "7.3.4"
         }
       },
       {
@@ -87,7 +87,7 @@
         "repositoryURL": "https://github.com/krzysztofzablocki/Sourcery",
         "state": {
           "branch": "master",
-          "revision": "f8a7b3d4d839283751b12434d2e6d9e09b3be4b7",
+          "revision": "6a749d629c745d3f74641ec2dd74eb289b6e4ba2",
           "version": null
         }
       },
@@ -132,8 +132,8 @@
         "repositoryURL": "https://github.com/Swinject/Swinject.git",
         "state": {
           "branch": null,
-          "revision": "5ff19b12b17312b6b4d5f23932bf79bed70dd293",
-          "version": "2.4.0"
+          "revision": "f4cb5ac942dd8eb7f187e59b8528dec904312495",
+          "version": "2.6.0"
         }
       },
       {
@@ -141,8 +141,8 @@
         "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
         "state": {
           "branch": null,
-          "revision": "9ba116841126f6c63435beef21a4cd247c32d2e7",
-          "version": "4.7.6"
+          "revision": "0d6bb315528888edde0dafe93564f074669c44e9",
+          "version": "4.8.0"
         }
       },
       {
