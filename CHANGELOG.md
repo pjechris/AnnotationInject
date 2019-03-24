@@ -1,6 +1,6 @@
 # Changelog
 
-## master
+## 0.4.0
 ### Breaking changes
 - Templates (register and resolver) are now written in Swift. Require Sourcery 0.16+.
 

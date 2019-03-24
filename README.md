@@ -9,6 +9,7 @@ Generate your dependency injections. Aimed for safety.
 | 👐                  | Based on open source tools you like as [Sourcery](https://github.com/krzysztofzablocki/Sourcery) and [Swinject](https://github.com/Swinject/Swinject).
 | :book:              | 100% open source under the MIT license
 
+> Starting with 0.4.0, templates are written using Swift. If you have any trouble, please file a issue.
 
 ## Why?
 ### Without annotations
