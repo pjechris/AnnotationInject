@@ -23,9 +23,10 @@ typealias ServiceResolver = Resolver
 {% endmacro %}
 
 {% macro add_service name annotations method %}
-  func registeredService({% call decl_args method %}) -> {% call service_type name annotations %} {
+  {% set actualTypeName %}{% call service_type typeName annotations %}{% endset %}
+  func registeredService({% call decl_args method %}) -> {{actualTypeName}} {
     {% filter removeNewlines:"leading" %}
-      return resolve({{name}}.self{% call get_arguments method %})!
+      return resolve({{actualTypeName}}.self{% call get_arguments method %})!
     {% endfilter %}
   }
 {% endmacro %}
