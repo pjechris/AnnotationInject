@@ -11,7 +11,13 @@ Generate your dependency injections. Aimed for safety.
 
 > Starting with 0.4.0, templates are written using Swift. If you have any trouble, please file a issue.
 
-## Why?
+
+- [What's the issue with injection?](#whats-the-issue-with-injection)
+- [Usage](#usage)
+- [Available annotations](#available-annotations)
+- [Caveats](#caveats)
+
+## What's the issue with injection?
 ### Without annotations
 Using a dependency injection library (say, Swinject) you need to **remember** to register your dependencies:
 
@@ -243,6 +249,23 @@ class AppProvider {
 
   </p>
 </details>
+
+### `provided`
+Declares a parameter as argument to define into the esolver method. Work on init and provider methods.
+
+```swift
+// sourcery: inject
+class Cat {
+  init(/* sourcery: provided */ name: String, /* sourcery: provided */ age: Int)
+}
+
+// sourcery: provider
+class AppProvider {
+    static func instantiate(resolver: Resolver, /* sourcery: provided */ name: String, /* sourcery: provided */ age: Int) -> Cat {
+        return Cat(name: String, age: Int)
+    }
+}
+```
 
 ## Caveats
 _**Generated code does not compile because of missing imports**_
