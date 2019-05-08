@@ -6,8 +6,9 @@ class ServiceProvider {
         return types.all
         .filter(annotated: "inject")
         .map { service in
-            // FIXME if no initializer is found
-            let initializer = service.initializers.filter(annotated: "inject").first ?? service.initializers.first!
+            guard let initializer = service.initializers.filter(annotated: "inject").first ?? service.initializers.first! else {
+                fatalError("No init method found. You need to declare one.")    
+            }
             let annotation = InjectAnnotation(attributes: service.annotations["inject"] as? [String: Any] ?? [:])
             
             return Service(factory: initializer,
