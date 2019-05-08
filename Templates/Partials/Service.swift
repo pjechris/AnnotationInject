@@ -1,24 +1,7 @@
 <%
 
-func serviceScope(_ service: Type) -> String? {
-  guard let injectAnnotation = service.annotations["inject"] as? [String: String] else {
-    return nil
-  }
-
-  return injectAnnotation["scope"]
-}
-
-func serviceResolvedType(_ service: Type) -> String {
-    guard let annotation = service.annotations["inject"] as? [String: String],
-          let typeName = annotation["type"] else {
-        return service.name
-    }
-
-    return typeName
-}
-
 func attributesAnnotatedInject(_ service: Type) -> ([Variable], [String]) {
-  let annotatedAttributes = service.instanceVariables.filter { has($0, annotation: "inject") }
+  let annotatedAttributes = service.instanceVariables.filter(annotated: "inject")
   var attributes: [Variable] = []
   var errors: [String] = []
 

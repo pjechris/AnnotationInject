@@ -2,7 +2,7 @@ import SourceryRuntime
 
 class ServiceProvider {
     /// Find and return all services annotated with `inject` annotation
-    func findInjectedServices() -> [Service] {
+    func findAnnotatedServices() -> [Service] {
         return types.all
         .filter(annotated: "inject")
         .map { service in
@@ -11,7 +11,7 @@ class ServiceProvider {
             let annotation = InjectAnnotation(attributes: service.annotations["inject"] as? [String: Any] ?? [:])
             
             return Service(factory: initializer,
-                            registerTypeName: annotation.type ?? initializer.returnTypeName.name,
+                            resolvedTypeName: annotation.type ?? initializer.returnTypeName.name,
                             parameters: [:],
                             scope: annotation.scope,
                             name: annotation.name)
@@ -27,7 +27,7 @@ class ServiceProvider {
         .filter { method in method.callName == "instantiate" }
         .map {
             Service(factory: $0,
-                    registerTypeName: $0.returnTypeName.name,
+                    resolvedTypeName: $0.returnTypeName.name,
                     parameters: [:],
                     scope: nil,
                     name: nil)
