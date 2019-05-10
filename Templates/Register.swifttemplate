@@ -5,31 +5,31 @@ import Swinject
 import <%= `import` %>
 <%_ } -%>
 
-<%- include("Partials/Annotation.swift") -%>
+<%- includeFile("../Sources/InjectAnnotation.swift") -%>
+<%- includeFile("../Sources/Service.swift") -%>
+<%- includeFile("../Sources/Sourcery+AnnotationInject.swift") -%>
+<%- includeFile("../Sources/ServiceProvider.swift") -%>
 <%- include("Partials/Method.swift") -%>
 <%- include("Partials/MethodParameter.swift") -%>
 <%- include("Partials/Service.swift") -%>
 <%- include("Partials/String.swift") -%>
 
 <%_
-  func factory(with method: SourceryRuntime.Method?) -> String {
-    guard let method = method else {
-        return """
-        { _ in
-            #error(\"No init method found.\")
-            }
-        """
+  func factory(with service: Service) -> String {
+    let method = service.factory
+    let parameters = method.parameters.filter(annotated: "provided")
+    let serviceParameters = method.parameters.filter { !parameters.contains($0) }
+    let factories = ServiceProvider().findFactoryServices()
+
+    let nonInjectableParameters = serviceParameters
+    .filter { !$0.hasAnnotation("inject") }
+    .filter { param in
+      let first = factories.first { $0.resolvedTypeName == param.typeName.name }
+      return first == nil ? true : false
     }
 
-    let parameters = method.parameters.filter { has($0, annotation: "provided") }
-    let services = method.parameters.filter { !parameters.contains($0) }
-    let nonInjectableServices = services.filter { service in
-        return service.type.map { !has($0, annotation: "inject") } ?? false
-        && provider(for: service) == nil
-    }
-
-    guard nonInjectableServices.isEmpty else {
-        let errors = nonInjectableServices
+    guard nonInjectableParameters.isEmpty else {
+        let errors = nonInjectableParameters
         .map { "#error(parameter '\($0.name)' requires \($0.typeName) to be annotated `inject` or have a `provider`.)" }
 
         return
@@ -47,8 +47,8 @@ import <%= `import` %>
     """
   }
 
-  func initCompleted(_ service: Type) -> String? {
-    let (attributes, errors) = attributesAnnotatedInject(service)
+  func initCompleted(_ service: Service) -> String? {
+    let (attributes, errors) = attributesAnnotatedInject(service.factory.definedInType!)
     let attributesStr = attributes.map { "service.\($0.name) = resolver.registeredService()" }
     let errorsStr = errors.map { "#error(\"\($0)\")"}
     let afterInit = attributesStr + errorsStr
@@ -64,24 +64,23 @@ import <%= `import` %>
     """
   }
 
-  func serviceOptions(_ service: Type) -> [String?] {
+  func serviceOptions(_ service: Service) -> [String?] {
     return [
         initCompleted(service),
-        serviceScope(service).map { ".inObjectScope(.\($0))" }
+        service.scope.map { ".inObjectScope(.\($0))" }
     ]
   }
 -%>
 
 class AnnotationAssembly: Assembly {
   func assemble(container: Container) {
-  <%_ for service in types.all.filter({ has($0, annotation: "inject") }) { -%>
-    <%_ let initializer = service.initializers.filter { has($0, annotation: "inject") }.first ?? service.initializers.first -%>
-
-    container.register(<%= service.name %>.self, factory: <%= factory(with: initializer) -%>)
+  <%_ for service in ServiceProvider().findAnnotatedServices() { -%>
+    container.register(<%= service.factory.returnTypeName %>.self, factory: <%= factory(with: service) -%>)
     <%= serviceOptions(service).compactMap { $0 }.joined(separator: "\n") _%>
   <%_ } -%>
 
-  <%_ for method in providers() { -%>
+  <%_ for service in ServiceProvider().findFactoryServices() { -%>
+    <%_ let method = service.factory -%>
     container.register(<%= method.returnTypeName %>.self, factory: <%= method.definedInTypeName?.name ?? "" %>.<%= method.selectorName %>)
   <%_ } -%>
   }
