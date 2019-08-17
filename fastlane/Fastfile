@@ -14,10 +14,10 @@
 # update_fastlane
 
 lane :install_deps do
-  cocoapods
+  spm(command: "resolve")
 end
 
 desc "Try to compile code and generate code using templates."
 lane :test_templates do
-  sh "cd .. && ./Scripts/annotationinject --sources Sources --output Generated"
+  sh "cd .. && swift run sourcery --sources Sources --output Generated --templates Templates"
 end
