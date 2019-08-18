@@ -1,8 +1,8 @@
 # Changelog
 
-## master
+## 0.4.1
 ### Fixed
-- Fixed compilation error in `ServiceProvider`
+- Fixed compilation error in `ServiceProvider`.
 
 ## 0.4.0
 ### Breaking changes
@@ -10,6 +10,9 @@
 
 ### Changed
 - Annotation `sourcery: provider` in `init` is not needed anymore.
+
+### Fixed
+- Fixed service resolving crash when using `type` inject option.
 
 ## 0.3.3
 ### Fixed

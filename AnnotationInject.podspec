@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                    = "AnnotationInject"
-  s.version                 = "0.4.0"
+  s.version                 = "0.4.1"
   s.source                  = { :git => "https://github.com/akane/AnnotationInject.git",
                                 :tag => s.version.to_s }
 
@@ -14,6 +14,6 @@ Pod::Spec.new do |s|
   s.swift_version           = "4.2"
   s.preserve_paths          = 'Scripts', 'Templates'
 
-  s.dependency              'Sourcery', '>= 0.16.0'
+  s.dependency              'Sourcery', '>= 0.16.2'
   s.dependency              'Swinject'
 end
