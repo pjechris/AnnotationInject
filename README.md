@@ -1,4 +1,6 @@
 # AnnotationInject
+[![Build Status](https://app.bitrise.io/app/155e5b7a217bcedf/status.svg?token=_RO05oFS4f8CgnilnIf9kg&branch=master)](https://app.bitrise.io/app/155e5b7a217bcedf)
+
 Generate your dependency injections. Aimed for safety.
 
 |                     | AnnotationInject
