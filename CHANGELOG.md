@@ -1,5 +1,9 @@
 # Changelog
 
+## master
+### Added
+- Pass default value parameters to `registeredService` method definition.
+
 ## 0.4.2
 ### Fixed
 - Fixed compilation issues when using Cocoapods.

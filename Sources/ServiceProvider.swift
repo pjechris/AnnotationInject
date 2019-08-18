@@ -21,6 +21,7 @@ class ServiceProvider {
         }
     }
 
+    /// return all services found into annotated factories
     func findFactoryServices() -> [Service] {
         return types.all
         .filter(annotated: "provider")
