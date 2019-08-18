@@ -1,0 +1,23 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+lane :install_deps do
+  spm(command: "resolve")
+end
+
+desc "Try to compile code and generate code using templates."
+lane :test_templates do
+  sh "cd .. && swift run sourcery --sources Sources --output Generated --templates Templates"
+end

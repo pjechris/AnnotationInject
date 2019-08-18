@@ -1,10 +1,13 @@
-// swift-tools-version:4.0
+// swift-tools-version:5.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "AnnotationInject",
+    platforms: [
+        .macOS(.v10_11)
+    ],
     products: [
         .library(
             name: "AnnotationInject",
@@ -12,7 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Swinject/Swinject.git", from: "2.4.0"),
-        .package(url: "https://github.com/krzysztofzablocki/Sourcery", .branch("master"))
+        .package(url: "https://github.com/krzysztofzablocki/Sourcery", from: "0.16.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -20,6 +23,6 @@ let package = Package(
         .target(
             name: "AnnotationInject",
             dependencies: ["Swinject", "SourceryRuntime"],
-            path: "")
+            path: "Sources")
     ]
 )
