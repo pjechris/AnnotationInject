@@ -1,4 +1,4 @@
-<%
+import SourceryRuntime
 
 enum MethodParameterPrinting {
     case call
@@ -26,5 +26,3 @@ func stringify(parameters: [MethodParameter], printing: MethodParameterPrinting)
     .map(mapping)
     .joined(separator: ", ")
 }
-
--%>

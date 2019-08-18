@@ -7,7 +7,6 @@ import <%= `import` %>
 
 <%- include("AnnotationInject.swift") -%>
 <%- include("Partials/Method.swift") -%>
-<%- include("Partials/MethodParameter.swift") -%>
 <%- include("Partials/Service.swift") -%>
 <%- include("Partials/String.swift") -%>
 
@@ -15,7 +14,7 @@ typealias ServiceResolver = Resolver
 
 /// Defines methods to *safely* access injected dependencies
 extension ServiceResolver {
-<%_ for service in ServiceProvider().findAnnotatedServices() { -%>
+<%_ for service in ServiceProvider(types: types).findAnnotatedServices() { -%>
     <%_ let method = service.factory -%>
     <%_ let parameters = method.parameters.filter(annotated: "provided") -%>
 
@@ -24,7 +23,7 @@ extension ServiceResolver {
     }
 <%_ } -%>
 
-<%_ for service in ServiceProvider().findFactoryServices() { -%>
+<%_ for service in ServiceProvider(types: types).findFactoryServices() { -%>
     <%_ let method = service.factory -%>
     <%_ let parameters = method.parameters.filter(annotated: "provided") -%>
 
