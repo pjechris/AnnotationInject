@@ -14,11 +14,12 @@ func stringify(parameters: [MethodParameter], printing: MethodParameterPrinting)
 
     switch printing {
         case .call:
-            mapping = { $0.name }
+            mapping = { $0.name }
         case .definition:
+
             mapping = {
                 "\($0.name): \($0.typeName)"
-                + ($0.defaultValue.map { " = " + $0 } ?? "")
+                + ($0.defaultValue.map { " = " + $0 } ?? "")
             }
     }
 
