@@ -12,4 +12,4 @@ workflows:
         - lane: install_deps
     - fastlane:
         inputs:
-        - lane: test_templates
+        - lane: test
