@@ -5,10 +5,7 @@ import Swinject
 import <%= `import` %>
 <%_ } -%>
 
-<%- includeFile("../Sources/InjectAnnotation.swift") -%>
-<%- includeFile("../Sources/Service.swift") -%>
-<%- includeFile("../Sources/Sourcery+AnnotationInject.swift") -%>
-<%- includeFile("../Sources/ServiceProvider.swift") -%>
+<%- include("AnnotationInject.swift") -%>
 <%- include("Partials/Method.swift") -%>
 <%- include("Partials/MethodParameter.swift") -%>
 <%- include("Partials/Service.swift") -%>

@@ -1,7 +1,7 @@
 import SourceryRuntime
 
 struct Service {
-    let factory: Method
+    let factory: SourceryRuntime.Method
     let resolvedTypeName: String
     let parameters: [MethodParameter: Any]
     let scope: String?
