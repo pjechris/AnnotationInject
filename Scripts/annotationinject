@@ -1,7 +1,7 @@
 #! /bin/sh -e
 
 SCRIPTPATH=$(dirname "$0")
-TEMPLATES="$SCRIPTPATH/../Templates"
+TEMPLATES=${TEMPLATES:-"$SCRIPTPATH/../Templates"}
 
 if [ -z "SOURCERY_BINPATH" ]; then
   SOURCERY_BINPATH="$SOURCERY_BINPATH"
@@ -13,4 +13,5 @@ fi
 
 set -x
 
+"$SCRIPTPATH/generate-annotation-template"
 "$SOURCERY_BINPATH" --templates "$TEMPLATES" "$@"
