@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2
+### Fixed
+- Fixed compilation issues when using Cocoapods.
+- Fixed a regression generating `#error` for registered services.
+- Fixed a regression preventing code from compiling when `#error` messages were present.
+
 ## 0.4.1
 ### Fixed
 - Fixed compilation error in `ServiceProvider`.
