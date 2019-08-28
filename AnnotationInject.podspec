@@ -12,7 +12,8 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target   = "8.0"
   s.swift_version           = "4.2"
-  s.preserve_paths          = 'Scripts', 'Templates'
+  s.preserve_paths          = 'Sources', 'Scripts', 'Templates'
+  s.prepare_command         = './Scripts/generate-annotation-template'
 
   s.dependency              'Sourcery', '>= 0.16.2'
   s.dependency              'Swinject'
