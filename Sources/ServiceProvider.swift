@@ -7,7 +7,7 @@ class ServiceProvider {
         .filter(annotated: "inject")
         .map { service in
             guard let initializer = service.initializers.filter(annotated: "inject").first ?? service.initializers.first else {
-                fatalError("No init method found. You need to declare one.")    
+                fatalError("No init method found on `\(service.name)`. You need to declare one.")    
             }
             let annotation = InjectAnnotation(attributes: service.annotations["inject"] as? [String: Any] ?? [:])
             

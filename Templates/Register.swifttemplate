@@ -1,14 +1,11 @@
 import Foundation
 import Swinject
-<%_ let imports = (argument["import"] as? String)?.split(separator: ",") ?? [] -%>
+<%_ let imports = (argument["imports"] as? String)?.split(separator: ",") ?? [] -%>
 <%_ for `import` in imports { -%>
 import <%= `import` %>
 <%_ } -%>
 
-<%- includeFile("../Sources/InjectAnnotation.swift") -%>
-<%- includeFile("../Sources/Service.swift") -%>
-<%- includeFile("../Sources/Sourcery+AnnotationInject.swift") -%>
-<%- includeFile("../Sources/ServiceProvider.swift") -%>
+<%- include("AnnotationInject.swift") %>
 <%- include("Partials/Method.swift") -%>
 <%- include("Partials/MethodParameter.swift") -%>
 <%- include("Partials/Service.swift") -%>
@@ -17,9 +14,10 @@ import <%= `import` %>
 <%_
   func factory(with service: Service) -> String {
     let method = service.factory
+    let serviceProvider = ServiceProvider()
     let parameters = method.parameters.filter(annotated: "provided")
     let serviceParameters = method.parameters.filter { !parameters.contains($0) }
-    let factories = ServiceProvider().findFactoryServices()
+    let factories = serviceProvider.findFactoryServices() + serviceProvider.findAnnotatedServices()
 
     let nonInjectableParameters = serviceParameters
     .filter { !$0.hasAnnotation("inject") }
@@ -30,7 +28,7 @@ import <%= `import` %>
 
     guard nonInjectableParameters.isEmpty else {
         let errors = nonInjectableParameters
-        .map { "#error(parameter '\($0.name)' requires \($0.typeName) to be annotated `inject` or have a `provider`.)" }
+        .map { "#error(\"parameter `\($0.name)` requires \($0.typeName) to be annotated `inject` or have a `provider`.\")" }
 
         return
         """

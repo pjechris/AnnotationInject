@@ -19,5 +19,6 @@ end
 
 desc "Try to compile code and generate code using templates."
 lane :test_templates do
+  sh "cd .. && ./Scripts/generate-annotation-template"
   sh "cd .. && swift run sourcery --sources Sources --output Generated --templates Templates"
 end
