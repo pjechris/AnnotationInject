@@ -1,6 +1,6 @@
 import Foundation
 import Swinject
-<%_ let imports = (argument["import"] as? String)?.split(separator: ",") ?? [] -%>
+<%_ let imports = (argument["imports"] as? String)?.split(separator: ",") ?? [] -%>
 <%_ for `import` in imports { -%>
 import <%= `import` %>
 <%_ } -%>
