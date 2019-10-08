@@ -13,7 +13,7 @@ import <%= `import` %>
 <%_
   func factory(with service: Service) -> String {
     let method = service.factory
-    let serviceProvider = ServiceProvider()
+    let serviceProvider = ServiceProvider(types: types)
     let parameters = method.parameters.filter(annotated: "provided")
     let serviceParameters = method.parameters.filter { !parameters.contains($0) }
     let factories = serviceProvider.findFactoryServices() + serviceProvider.findAnnotatedServices()
