@@ -1,6 +1,12 @@
 import SourceryRuntime
 
 class ServiceProvider {
+    private let types: Types
+
+    init(types: Types) {
+        self.types = types
+    }
+
     /// Find and return all services annotated with `inject` annotation
     func findAnnotatedServices() -> [Service] {
         return types.all
@@ -21,6 +27,7 @@ class ServiceProvider {
         }
     }
 
+    /// return all services found into annotated factories
     func findFactoryServices() -> [Service] {
         return types.all
         .filter(annotated: "provider")

@@ -15,7 +15,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Swinject/Swinject.git", from: "2.4.0"),
-        .package(url: "https://github.com/krzysztofzablocki/Sourcery", from: "0.16.2")
+        .package(url: "https://github.com/krzysztofzablocki/Sourcery", from: "0.16.2"),
+        .package(url: "https://github.com/Quick/Nimble", from: "8.0.2"),
+        .package(url: "https://github.com/Quick/Quick", from: "2.1.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -23,6 +25,11 @@ let package = Package(
         .target(
             name: "AnnotationInject",
             dependencies: ["Swinject", "SourceryRuntime"],
-            path: "Sources")
+            path: "Sources"),
+        .testTarget(
+            name: "AnnotationInjectTests",
+            dependencies: ["AnnotationInject", "Quick", "Nimble"],
+            path: "Tests"
+        )
     ]
 )
