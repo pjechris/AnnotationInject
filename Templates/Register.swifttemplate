@@ -1,0 +1,84 @@
+import Foundation
+import Swinject
+<%_ let imports = (argument["imports"] as? String)?.split(separator: ",") ?? [] -%>
+<%_ for `import` in imports { -%>
+import <%= `import` %>
+<%_ } -%>
+
+<%- include("AnnotationInject.swift") %>
+<%- include("Partials/Method.swift") -%>
+<%- include("Partials/Service.swift") -%>
+<%- include("Partials/String.swift") -%>
+
+<%_
+  func factory(with service: Service) -> String {
+    let method = service.factory
+    let serviceProvider = ServiceProvider(types: types)
+    let parameters = method.parameters.filter(annotated: "provided")
+    let serviceParameters = method.parameters.filter { !parameters.contains($0) }
+    let factories = serviceProvider.findFactoryServices() + serviceProvider.findAnnotatedServices()
+
+    let nonInjectableParameters = serviceParameters
+    .filter { !$0.hasAnnotation("inject") }
+    .filter { param in
+      let first = factories.first { $0.resolvedTypeName == param.typeName.name }
+      return first == nil ? true : false
+    }
+
+    guard nonInjectableParameters.isEmpty else {
+        let errors = nonInjectableParameters
+        .map { "#error(\"parameter `\($0.name)` requires \($0.typeName) to be annotated `inject` or have a `provider`.\")" }
+
+        return
+        """
+        { _ in
+                \(errors.joined(separator: "\n"))
+            }
+        """
+    }
+
+    return """
+    { resolver\(prefixNonEmpty(concatParamNames(of: parameters), with: ",")) in
+            \(method.returnTypeName)(\(concat(parametersWithValue(method))))
+        }
+    """
+  }
+
+  func initCompleted(_ service: Service) -> String? {
+    let (attributes, errors) = attributesAnnotatedInject(service.factory.definedInType!)
+    let attributesStr = attributes.map { "service.\($0.name) = resolver.registeredService()" }
+    let errorsStr = errors.map { "#error(\"\($0)\")"}
+    let afterInit = attributesStr + errorsStr
+
+    if attributes.isEmpty && errors.isEmpty {
+        return nil
+    }
+
+    return """
+    .initCompleted { service, resolver if
+            \(afterInit.joined(separator: "\n       "))
+        }
+    """
+  }
+
+  func serviceOptions(_ service: Service) -> [String?] {
+    return [
+        initCompleted(service),
+        service.scope.map { ".inObjectScope(.\($0))" }
+    ]
+  }
+-%>
+
+class AnnotationAssembly: Assembly {
+  func assemble(container: Container) {
+  <%_ for service in ServiceProvider(types: types).findAnnotatedServices() { -%>
+    container.register(<%= service.factory.returnTypeName %>.self, factory: <%= factory(with: service) -%>)
+    <%= serviceOptions(service).compactMap { $0 }.joined(separator: "\n") _%>
+  <%_ } -%>
+
+  <%_ for service in ServiceProvider(types: types).findFactoryServices() { -%>
+    <%_ let method = service.factory -%>
+    container.register(<%= method.returnTypeName %>.self, factory: <%= method.definedInTypeName?.name ?? "" %>.<%= method.selectorName %>)
+  <%_ } -%>
+  }
+}

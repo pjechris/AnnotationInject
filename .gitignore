@@ -5,6 +5,8 @@
 ## Build generated
 build/
 DerivedData/
+Generated/
+Templates/AnnotationInject.swift
 
 ## Various settings
 *.pbxuser

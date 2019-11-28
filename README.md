@@ -1,4 +1,7 @@
 # AnnotationInject
+[![Build Status](https://app.bitrise.io/app/155e5b7a217bcedf/status.svg?token=_RO05oFS4f8CgnilnIf9kg&branch=master)](https://app.bitrise.io/app/155e5b7a217bcedf)
+![Cocoapods](https://img.shields.io/static/v1?label=cocoapods&message=%E2%9C%93&color=24C28A&labelColor=444444)
+
 Generate your dependency injections. Aimed for safety.
 
 |                     | AnnotationInject
@@ -9,8 +12,15 @@ Generate your dependency injections. Aimed for safety.
 | 👐                  | Based on open source tools you like as [Sourcery](https://github.com/krzysztofzablocki/Sourcery) and [Swinject](https://github.com/Swinject/Swinject).
 | :book:              | 100% open source under the MIT license
 
+> Starting with 0.4.0, templates are written using Swift. If you have any trouble, please file a issue.
 
-## Why?
+
+- [What's the issue with injection?](#whats-the-issue-with-injection)
+- [Usage](#usage)
+- [Available annotations](#available-annotations)
+- [Caveats](#caveats)
+
+## What's the issue with injection?
 ### Without annotations
 Using a dependency injection library (say, Swinject) you need to **remember** to register your dependencies:
 
@@ -86,10 +96,14 @@ Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your pr
 
  1. Install [Swinject](https://github.com/Swinject/Swinject) and [Sourcery](https://github.com/krzysztofzablocki/Sourcery).
 
- 2. Copy-paste templates inside a directory and add a new `Build phases` to your project:
+ 2. Copy-paste Sources and Templates folders inside and add a new `Build phases` to your project:
 ```shell
 sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code> (--args.imports <MyLibs>)
 ```
+
+- Swift Package Manager
+
+We do not officially support Swift Package Manager as it does not have resources handling yet.
 
 ## Available annotations
 
@@ -242,6 +256,23 @@ class AppProvider {
 
   </p>
 </details>
+
+### `provided`
+Declares a parameter as argument to define into the esolver method. Work on init and provider methods.
+
+```swift
+// sourcery: inject
+class Cat {
+  init(/* sourcery: provided */ name: String, /* sourcery: provided */ age: Int)
+}
+
+// sourcery: provider
+class AppProvider {
+    static func instantiate(resolver: Resolver, /* sourcery: provided */ name: String, /* sourcery: provided */ age: Int) -> Cat {
+        return Cat(name: String, age: Int)
+    }
+}
+```
 
 ## Caveats
 _**Generated code does not compile because of missing imports**_

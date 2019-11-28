@@ -1,5 +1,29 @@
 # Changelog
 
+## master
+### Added
+- Pass default value parameters to `registeredService` method definition.
+
+## 0.4.2
+### Fixed
+- Fixed compilation issues when using Cocoapods.
+- Fixed a regression generating `#error` for registered services.
+- Fixed a regression preventing code from compiling when `#error` messages were present.
+
+## 0.4.1
+### Fixed
+- Fixed compilation error in `ServiceProvider`.
+
+## 0.4.0
+### Breaking changes
+- Templates (register and resolver) are now written in Swift. Require Sourcery 0.16+.
+
+### Changed
+- Annotation `sourcery: provider` in `init` is not needed anymore.
+
+### Fixed
+- Fixed service resolving crash when using `type` inject option.
+
 ## 0.3.3
 ### Fixed
 - Fixed issue with generic parameters not defined in register and registered. Note: This works only for providers.
