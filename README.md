@@ -87,7 +87,7 @@ let heater = resolver.registeredService() as Heater
 
 Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your project:
 ```shell
-"$(PODS_ROOT)"/AnnotationInject/Scripts/annotationinject --sources <path to your sources> --output <path to output generated code> (--args.imports <MyLibs>)
+"$(PODS_ROOT)"/AnnotationInject/Scripts/annotationinject --sources <path to your sources> --output <path to output generated code> (--args imports=<MyLib1> --args imports=<MyLib2>)
 ```
 
 > Note: You can pass all `sourcery` command line options to `annotationinject` script.
@@ -98,7 +98,7 @@ Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your pr
 
  2. Copy-paste Sources and Templates folders inside and add a new `Build phases` to your project:
 ```shell
-sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code> (--args.imports <MyLibs>)
+sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code> (--args imports=<MyLib1> --args imports=<MyLib2>)
 ```
 
 - Swift Package Manager
@@ -277,7 +277,7 @@ class AppProvider {
 ## Caveats
 _**Generated code does not compile because of missing imports**_
 
-Set `--args.imports <MyLibs>` so that generated code includes 3rd party libraries.
+Set `--args imports=<MyLib>` so that generated code includes 3rd party libraries.
 
 _**Foundation types (URLSession, NSNotificationCenter, ...) are empty (.self) in generated code**_
 
