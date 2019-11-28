@@ -1,19 +1,32 @@
 import Foundation
 import Swinject
-<%_ let imports = (argument["imports"] as? String)?.split(separator: ",") ?? [] -%>
+
+<%_ 
+    let imports: [String]!
+
+    if let _imports = (argument["imports"] as? [String]) {
+      imports =  _imports
+    } else if let _import = argument["imports"] as? String {
+         imports = [_import]
+    } else {
+       imports =  []
+    }
+-%>
+
 <%_ for `import` in imports { -%>
 import <%= `import` %>
 <%_ } -%>
 
 <%- include("AnnotationInject.swift") %>
 <%- include("Partials/Method.swift") -%>
+<%- include("Partials/MethodParameter.swift") -%>
 <%- include("Partials/Service.swift") -%>
 <%- include("Partials/String.swift") -%>
 
 <%_
   func factory(with service: Service) -> String {
     let method = service.factory
-    let serviceProvider = ServiceProvider(types: types)
+    let serviceProvider = ServiceProvider()
     let parameters = method.parameters.filter(annotated: "provided")
     let serviceParameters = method.parameters.filter { !parameters.contains($0) }
     let factories = serviceProvider.findFactoryServices() + serviceProvider.findAnnotatedServices()
@@ -71,12 +84,12 @@ import <%= `import` %>
 
 class AnnotationAssembly: Assembly {
   func assemble(container: Container) {
-  <%_ for service in ServiceProvider(types: types).findAnnotatedServices() { -%>
+  <%_ for service in ServiceProvider().findAnnotatedServices() { -%>
     container.register(<%= service.factory.returnTypeName %>.self, factory: <%= factory(with: service) -%>)
     <%= serviceOptions(service).compactMap { $0 }.joined(separator: "\n") _%>
   <%_ } -%>
 
-  <%_ for service in ServiceProvider(types: types).findFactoryServices() { -%>
+  <%_ for service in ServiceProvider().findFactoryServices() { -%>
     <%_ let method = service.factory -%>
     container.register(<%= method.returnTypeName %>.self, factory: <%= method.definedInTypeName?.name ?? "" %>.<%= method.selectorName %>)
   <%_ } -%>

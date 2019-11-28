@@ -1,12 +1,25 @@
 import Foundation
 import Swinject
-<%_ let imports = (argument["imports"] as? String)?.split(separator: ",") ?? [] -%>
+
+<%_ 
+    let imports: [String]!
+
+    if let _imports = (argument["imports"] as? [String]) {
+      imports =  _imports
+    } else if let _import = argument["imports"] as? String {
+         imports = [_import]
+    } else {
+       imports =  []
+    }
+-%>
+
 <%_ for `import` in imports { -%>
 import <%= `import` %>
 <%_ } -%>
 
 <%- include("AnnotationInject.swift") -%>
 <%- include("Partials/Method.swift") -%>
+<%- include("Partials/MethodParameter.swift") -%>
 <%- include("Partials/Service.swift") -%>
 <%- include("Partials/String.swift") -%>
 
@@ -14,7 +27,7 @@ typealias ServiceResolver = Resolver
 
 /// Defines methods to *safely* access injected dependencies
 extension ServiceResolver {
-<%_ for service in ServiceProvider(types: types).findAnnotatedServices() { -%>
+<%_ for service in ServiceProvider().findAnnotatedServices() { -%>
     <%_ let method = service.factory -%>
     <%_ let parameters = method.parameters.filter(annotated: "provided") -%>
 
@@ -23,7 +36,7 @@ extension ServiceResolver {
     }
 <%_ } -%>
 
-<%_ for service in ServiceProvider(types: types).findFactoryServices() { -%>
+<%_ for service in ServiceProvider().findFactoryServices() { -%>
     <%_ let method = service.factory -%>
     <%_ let parameters = method.parameters.filter(annotated: "provided") -%>
 
