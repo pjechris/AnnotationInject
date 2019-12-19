@@ -1,22 +1,16 @@
 <%
 
 /// - Returns: a String of method parameters with their values.
-/// Params value annotated "provided" is considered to be named as the param itself
-func parametersWithValue(_ method: SourceryRuntime.Method) -> [(label: String, value: String)] {
-  var paramsWithValue: [(label: String, value: String)] = []
+func parametersWithValue(_ params: [ServiceParameterValue]) -> [(label: String, value: String)] {
 
-  for param in method.parameters {
-    let value = param.hasAnnotation("provided")
-    ? param.name
-    : "resolver.registeredService()"
-
-    paramsWithValue.append((
-      label: param.argumentLabel ?? param.name,
-      value: value
-    ))
+  return params.map {
+    switch $0.value {
+    case .runtime:
+      return (label: $0.name, value: $0.name)  
+    case .service(let service):
+      return (label: $0.name, value: "resolver.\(service.functionName)()")
+    }
   }
-
-  return paramsWithValue
 }
 
 func concat(_ labelAndValue: [(label: String, value: String)]) -> String {

@@ -12,34 +12,14 @@ import <%= `import` %>
 
 <%_
   func factory(with service: Service) -> String {
-    let method = service.factory
     let serviceProvider = ServiceProvider(types: types)
-    let parameters = method.parameters.filter(annotated: "provided")
-    let serviceParameters = method.parameters.filter { !parameters.contains($0) }
     let factories = serviceProvider.findFactoryServices() + serviceProvider.findAnnotatedServices()
-
-    let nonInjectableParameters = serviceParameters
-    .filter { !$0.hasAnnotation("inject") }
-    .filter { param in
-      let first = factories.first { $0.resolvedTypeName == param.typeName.name }
-      return first == nil ? true : false
-    }
-
-    guard nonInjectableParameters.isEmpty else {
-        let errors = nonInjectableParameters
-        .map { "#error(\"parameter `\($0.name)` requires \($0.typeName) to be annotated `inject` or have a `provider`.\")" }
-
-        return
-        """
-        { _ in
-                \(errors.joined(separator: "\n"))
-            }
-        """
-    }
+    
+    let paramValues = serviceProvider.findParameterValues(for: service)
 
     return """
-    { resolver\(prefixNonEmpty(concatParamNames(of: parameters), with: ",")) in
-            \(method.returnTypeName)(\(concat(parametersWithValue(method))))
+    { resolver\(prefixNonEmpty(concatParamNames(of: paramValues.runtimeParameters()), with: ",")) in
+            \(service.registerTypeName)(\(concat(parametersWithValue(paramValues))))
         }
     """
   }
