@@ -44,7 +44,7 @@ func parametersWithValue(_ params: [ServiceParameterValue]) -> [(label: String, 
   return params.map {
     switch $0.value {
     case .runtime:
-      return (label: $0.name, value: $0.name)  
+      return (label: $0.name, value: $0.name)
     case .service(let service):
       return (label: $0.name, value: "resolver.\(service.functionName)()")
     }

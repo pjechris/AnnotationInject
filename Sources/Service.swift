@@ -14,7 +14,7 @@ struct Service {
 
     /// name of the compile-time function returning this service
     var functionName: String {
-        "service"
-        + (name.map { "Named\($0.capitalized)" } ?? "")
+        name.map { "serviceNamed\($0.capitalized)" }
+        ?? "registeredService"
     }
 }
