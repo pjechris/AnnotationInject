@@ -37,3 +37,16 @@ extension Array where Element == ServiceParameterValue {
         return filter { $0.isRuntime }.map { $0.methodParameter }
     }
 }
+
+/// - Returns: a String of method parameters with their values.
+func parametersWithValue(_ params: [ServiceParameterValue]) -> [(label: String, value: String)] {
+
+  return params.map {
+    switch $0.value {
+    case .runtime:
+      return (label: $0.name, value: $0.name)  
+    case .service(let service):
+      return (label: $0.name, value: "resolver.\(service.functionName)()")
+    }
+  }
+}

@@ -18,7 +18,7 @@ import <%= `import` %>
     let paramValues = serviceProvider.findParameterValues(for: service)
 
     return """
-    { resolver\(prefixNonEmpty(concatParamNames(of: paramValues.runtimeParameters()), with: ",")) in
+    { resolver\(prefixNonEmpty(concatParamNames(of: paramValues.runtimeParameters()), with: ", ")) in
             \(service.registerTypeName)(\(concat(parametersWithValue(paramValues))))
         }
     """
