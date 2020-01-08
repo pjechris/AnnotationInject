@@ -3,6 +3,11 @@
 ## master
 ### Added
 - Pass default value parameters to `registeredService` method definition.
+- WIP: You can now pass `name` injection option to services. Generated method will be called `serviceNamed{Name}` instead of `registeredService`. Note it does not work with injected attributes and will reslt in compilation error for the time being.
+
+### Removed
+- `provided` annotation is not needed anymore. AnnotationInject will lookup for services.
+- Along with `provided` AnnotationInject no longer generate an error if a parameter service is not registered. It will be considered as a de-facto resolving parameter.
 
 ## 0.4.2
 ### Fixed
