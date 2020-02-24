@@ -1,9 +1,11 @@
 import SourceryRuntime
+import Foundation
 
 class ServiceProvider {
+    /// FIXME Remove state from provider class
     private let types: Types
-    private var annotationServices: [Service] = []
-    private var factoryServices: [Service] = []
+    var annotationServices: [Service] = []
+    var factoryServices: [Service] = []
     private var services: [Service] {
         return annotationServices + factoryServices
     }
@@ -59,7 +61,7 @@ class ServiceProvider {
         return factoryServices
     }
 
-    /// Define service parameter types
+    /// Return service init parameter values
     func findParameterValues(for service: Service) -> [ServiceParameterValue] {
         service.factory.parameters.map { param in
             if let service = annotationServices.first(where: { param.typeName.name == $0.resolvedTypeName }) {
@@ -75,10 +77,10 @@ class ServiceProvider {
     }
 
     /// Return services that need to be served (injected) to `service` variables/attributes
-    func findServices(for service: Service) throws -> [(variable: Variable, service: Service)] {
+    func findInjectedServiceAttributes(for service: Service) throws -> [(variable: Variable, service: Service)] {
         let variables = service.factory.definedInType!.instanceVariables.filter(annotated: "inject")
 
-        return variables.map { variable in
+        return try variables.map { variable in
             guard variable.typeName.isOptional else {
                 throw NSError(domain: "'\(variable.name)' needs to be optional to be injected", code: 0, userInfo: nil)
             }
@@ -87,11 +89,11 @@ class ServiceProvider {
                 throw NSError(domain: "'\(variable.name)' needs to be mutable to be injected", code: 0, userInfo: nil)
             }
 
-            guard let service = services.first(where: { $0.registerTypeName == variable.typeName }) else {
+            guard let service = services.first(where: { $0.registerTypeName == variable.typeName.name }) else {
                 throw NSError(domain: "No service found matching '\(variable.name)' type" , code: 0, userInfo: nil)
             }
 
-            (variable: variable, service: service)
+            return (variable: variable, service: service)
         }
     }
 }

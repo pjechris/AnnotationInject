@@ -37,7 +37,7 @@ import <%= `import` %>
   func initCompleted(_ service: Service) -> String? {
     do {
       let variables = try serviceProvider
-          .findServices(for: service)
+          .findInjectedServiceAttributes(for: service)
           .map { "service.\($0.variable.name) = resolver.\($0.service.functionName)"  }
 
       guard !variables.isEmpty else {
