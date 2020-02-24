@@ -4,6 +4,9 @@ class ServiceProvider {
     private let types: Types
     private var annotationServices: [Service] = []
     private var factoryServices: [Service] = []
+    private var services: [Service] {
+        return annotationServices + factoryServices
+    }
 
     init(types: Types) {
         self.types = types
@@ -56,6 +59,7 @@ class ServiceProvider {
         return factoryServices
     }
 
+    /// Define service parameter types
     func findParameterValues(for service: Service) -> [ServiceParameterValue] {
         service.factory.parameters.map { param in
             if let service = annotationServices.first(where: { param.typeName.name == $0.resolvedTypeName }) {
@@ -67,6 +71,27 @@ class ServiceProvider {
             }
 
             return .init(param, value: .runtime)
+        }
+    }
+
+    /// Return services that need to be served (injected) to `service` variables/attributes
+    func findServices(for service: Service) throws -> [(variable: Variable, service: Service)] {
+        let variables = service.factory.definedInType!.instanceVariables.filter(annotated: "inject")
+
+        return variables.map { variable in
+            guard variable.typeName.isOptional else {
+                throw NSError(domain: "'\(variable.name)' needs to be optional to be injected", code: 0, userInfo: nil)
+            }
+
+            guard variable.isMutable else {
+                throw NSError(domain: "'\(variable.name)' needs to be mutable to be injected", code: 0, userInfo: nil)
+            }
+
+            guard let service = services.first(where: { $0.registerTypeName == variable.typeName }) else {
+                throw NSError(domain: "No service found matching '\(variable.name)' type" , code: 0, userInfo: nil)
+            }
+
+            (variable: variable, service: service)
         }
     }
 }
