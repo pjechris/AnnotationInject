@@ -1,6 +1,6 @@
 import Foundation
 import Swinject
-<%_ 
+<%_
     let imports: [String]!
 
     if let _imports = (argument["imports"] as? [String]) {
@@ -17,7 +17,6 @@ import <%= `import` %>
 
 <%- include("AnnotationInject.swift") %>
 <%- include("Partials/Method.swift") -%>
-<%- include("Partials/Service.swift") -%>
 <%- include("Partials/String.swift") -%>
 
 <%_
@@ -41,7 +40,7 @@ import <%= `import` %>
           .map { "service.\($0.variable.name) = resolver.\($0.service.functionName)"  }
 
       guard !variables.isEmpty else {
-        return
+        return nil
       }
 
       return """
