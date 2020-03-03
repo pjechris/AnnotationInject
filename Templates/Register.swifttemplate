@@ -37,7 +37,7 @@ import <%= `import` %>
     do {
       let variables = try serviceProvider
           .findInjectedServiceAttributes(for: service)
-          .map { "service.\($0.variable.name) = resolver.\($0.service.functionName)"  }
+          .map { "service.\($0.variable.name) = resolver.\($0.service.functionName)()"  }
 
       guard !variables.isEmpty else {
         return nil
@@ -52,7 +52,7 @@ import <%= `import` %>
     catch {
       return """
         .initCompleted { _, _ in
-          #error("\(error)")
+          #error(#"\(error)"#)
         }
       """
     }

@@ -81,16 +81,12 @@ class ServiceProvider {
         let variables = service.factory.definedInType!.instanceVariables.filter(annotated: "inject")
 
         return try variables.map { variable in
-            guard variable.typeName.isOptional else {
-                throw NSError(domain: "'\(variable.name)' needs to be optional to be injected", code: 0, userInfo: nil)
-            }
-
             guard variable.isMutable else {
                 throw NSError(domain: "'\(variable.name)' needs to be mutable to be injected", code: 0, userInfo: nil)
             }
 
-            guard let service = services.first(where: { $0.registerTypeName == variable.typeName.name }) else {
-                throw NSError(domain: "No service found matching '\(variable.name)' type" , code: 0, userInfo: nil)
+            guard let service = services.first(where: { $0.registerTypeName == variable.typeName.name || $0.registerTypeName == variable.typeName.unwrappedTypeName }) else {
+                throw NSError(domain: "No service found matching '\(variable.typeName.name)' type" , code: 0, userInfo: nil)
             }
 
             return (variable: variable, service: service)
