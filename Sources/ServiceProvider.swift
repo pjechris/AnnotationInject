@@ -29,8 +29,7 @@ class ServiceProvider {
                 let annotation = InjectAnnotation(attributes: service.annotations["inject"] as? [String: Any] ?? [:])
 
                 return Service(factory: initializer,
-                               resolvedTypeName: annotation.type ?? initializer.returnTypeName.name,
-                               parameters: [:],
+                               resolvedTypeName: annotation.type,
                                scope: annotation.scope,
                                name: annotation.name)
 
@@ -53,7 +52,6 @@ class ServiceProvider {
             .map {
                 Service(factory: $0,
                         resolvedTypeName: $0.returnTypeName.name,
-                        parameters: [:],
                         scope: nil,
                         name: nil)
         }
