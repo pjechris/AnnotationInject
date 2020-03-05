@@ -12,13 +12,12 @@ Generate your dependency injections. Aimed for safety.
 | 👐                  | Based on open source tools you like as [Sourcery](https://github.com/krzysztofzablocki/Sourcery) and [Swinject](https://github.com/Swinject/Swinject).
 | :book:              | 100% open source under the MIT license
 
-> Starting with 0.4.0, templates are written using Swift. If you have any trouble, please file a issue.
-
-
 - [What's the issue with injection?](#whats-the-issue-with-injection)
 - [Usage](#usage)
 - [Available annotations](#available-annotations)
 - [Caveats](#caveats)
+
+> Documentation for a specific release might slightly differ. If you have troubles please check the release doc first (by selecting the release in Github switch branches/tags).
 
 ## What's the issue with injection?
 ### Without annotations
@@ -138,6 +137,8 @@ class CoffeeMaker { }
   <summary>Options</summary>
   <p>
     <dl>
+        <dt>name</dt>
+        <dd>Define a name for the service. Generated method will use that name.</dd>
         <dt>scope</dt>
         <dd>See <a href="https://github.com/Swinject/Swinject/blob/master/Documentation/ObjectScopes.md">Swinject Object Scopes</a>
         </dd>
@@ -149,7 +150,7 @@ class CoffeeMaker { }
   </p>
 
   ```swift
-  /// sourcery:inject: scope = "weak", type = "Maker"
+  /// sourcery:inject: scope = "weak", type = "Maker", name = "Arabica"
   class CoffeeMaker: Maker { }
   ```
 </details>

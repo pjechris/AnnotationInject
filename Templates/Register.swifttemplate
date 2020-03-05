@@ -1,6 +1,6 @@
 import Foundation
 import Swinject
-<%_ 
+<%_
     let imports: [String]!
 
     if let _imports = (argument["imports"] as? [String]) {
@@ -17,14 +17,13 @@ import <%= `import` %>
 
 <%- include("AnnotationInject.swift") %>
 <%- include("Partials/Method.swift") -%>
-<%- include("Partials/Service.swift") -%>
 <%- include("Partials/String.swift") -%>
 
 <%_
+  let serviceProvider = ServiceProvider(types: types)
+  let factories = serviceProvider.findFactoryServices() + serviceProvider.findAnnotatedServices()
+
   func factory(with service: Service) -> String {
-    let serviceProvider = ServiceProvider(types: types)
-    let factories = serviceProvider.findFactoryServices() + serviceProvider.findAnnotatedServices()
-    
     let paramValues = serviceProvider.findParameterValues(for: service)
 
     return """
@@ -35,20 +34,28 @@ import <%= `import` %>
   }
 
   func initCompleted(_ service: Service) -> String? {
-    let (attributes, errors) = attributesAnnotatedInject(service.factory.definedInType!)
-    let attributesStr = attributes.map { "service.\($0.name) = resolver.registeredService()" }
-    let errorsStr = errors.map { "#error(\"\($0)\")"}
-    let afterInit = attributesStr + errorsStr
+    do {
+      let variables = try serviceProvider
+          .findInjectedServiceAttributes(for: service)
+          .map { "service.\($0.variable.name) = resolver.\($0.service.functionName)()"  }
 
-    if attributes.isEmpty && errors.isEmpty {
+      guard !variables.isEmpty else {
         return nil
-    }
+      }
 
-    return """
-    .initCompleted { service, resolver if
-            \(afterInit.joined(separator: "\n       "))
+      return """
+        .initCompleted { service, resolver in
+            \(variables.joined(separator: "\n       "))
         }
-    """
+      """
+    }
+    catch {
+      return """
+        .initCompleted { _, _ in
+          #error(#"\(error)"#)
+        }
+      """
+    }
   }
 
   func serviceOptions(_ service: Service) -> [String?] {

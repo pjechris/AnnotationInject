@@ -4,7 +4,7 @@ import SourceryRuntime
 @dynamicMemberLookup
 struct ServiceParameterValue {
     enum Value {
-        /// parameter that need to be provided
+        /// parameter that need to be provided by user at resolution time
         case runtime
         /// parameter whose value can be resolved using a service
         case service(Service)

@@ -17,7 +17,6 @@ import <%= `import` %>
 
 <%- include("AnnotationInject.swift") -%>
 <%- include("Partials/Method.swift") -%>
-<%- include("Partials/Service.swift") -%>
 <%- include("Partials/String.swift") -%>
 
 typealias ServiceResolver = Resolver

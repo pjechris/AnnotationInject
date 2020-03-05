@@ -1,9 +1,14 @@
 import SourceryRuntime
+import Foundation
 
 class ServiceProvider {
+    /// FIXME Remove state from provider class
     private let types: Types
-    private var annotationServices: [Service] = []
-    private var factoryServices: [Service] = []
+    var annotationServices: [Service] = []
+    var factoryServices: [Service] = []
+    private var services: [Service] {
+        return annotationServices + factoryServices
+    }
 
     init(types: Types) {
         self.types = types
@@ -56,6 +61,7 @@ class ServiceProvider {
         return factoryServices
     }
 
+    /// Return service init parameter values
     func findParameterValues(for service: Service) -> [ServiceParameterValue] {
         service.factory.parameters.map { param in
             if let service = annotationServices.first(where: { param.typeName.name == $0.resolvedTypeName }) {
@@ -67,6 +73,23 @@ class ServiceProvider {
             }
 
             return .init(param, value: .runtime)
+        }
+    }
+
+    /// Return services that need to be served (injected) to `service` variables/attributes
+    func findInjectedServiceAttributes(for service: Service) throws -> [(variable: Variable, service: Service)] {
+        let variables = service.factory.definedInType!.instanceVariables.filter(annotated: "inject")
+
+        return try variables.map { variable in
+            guard variable.isMutable else {
+                throw NSError(domain: "'\(variable.name)' needs to be mutable to be injected", code: 0, userInfo: nil)
+            }
+
+            guard let service = services.first(where: { $0.registerTypeName == variable.typeName.name || $0.registerTypeName == variable.typeName.unwrappedTypeName }) else {
+                throw NSError(domain: "No service found matching '\(variable.typeName.name)' type" , code: 0, userInfo: nil)
+            }
+
+            return (variable: variable, service: service)
         }
     }
 }
