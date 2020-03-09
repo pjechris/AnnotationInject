@@ -1,6 +1,6 @@
 import Foundation
 import Swinject
-<%_ 
+<%_
     let imports: [String]!
 
     if let _imports = (argument["imports"] as? [String]) {
@@ -23,7 +23,7 @@ typealias ServiceResolver = Resolver
 
 /// Defines methods to *safely* access injected dependencies
 extension ServiceResolver {
-<%_ let serviceProvider = ServiceProvider(types: types) -%>
+<%_ let serviceProvider = ServiceProvider(sourcery: .init(types: types)) %>
 <%_ for service in serviceProvider.findAnnotatedServices() { -%>
     <%_ let method = service.factory -%>
     <%_ let parameters = serviceProvider.findParameterValues(for: service).runtimeParameters() -%>

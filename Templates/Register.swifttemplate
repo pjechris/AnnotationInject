@@ -20,7 +20,7 @@ import <%= `import` %>
 <%- include("Partials/String.swift") -%>
 
 <%_
-  let serviceProvider = ServiceProvider(types: types)
+  let serviceProvider = ServiceProvider(sourcery: .init(types: types))
   let factories = serviceProvider.findFactoryServices() + serviceProvider.findAnnotatedServices()
 
   func factory(with service: Service) -> String {
@@ -68,12 +68,12 @@ import <%= `import` %>
 
 class AnnotationAssembly: Assembly {
   func assemble(container: Container) {
-  <%_ for service in ServiceProvider(types: types).findAnnotatedServices() { -%>
+  <%_ for service in serviceProvider.findAnnotatedServices() { -%>
     container.register(<%= service.factory.returnTypeName %>.self, factory: <%= factory(with: service) -%>)
     <%= serviceOptions(service).compactMap { $0 }.joined(separator: "\n") _%>
   <%_ } -%>
 
-  <%_ for service in ServiceProvider(types: types).findFactoryServices() { -%>
+  <%_ for service in serviceProvider.findFactoryServices() { -%>
     <%_ let method = service.factory -%>
     container.register(<%= method.returnTypeName %>.self, factory: <%= method.definedInTypeName?.name ?? "" %>.<%= method.selectorName %>)
   <%_ } -%>

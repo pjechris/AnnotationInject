@@ -2,71 +2,34 @@ import SourceryRuntime
 import Foundation
 
 class ServiceProvider {
-    /// FIXME Remove state from provider class
-    private let types: Types
-    var annotationServices: [Service] = []
-    var factoryServices: [Service] = []
-    private var services: [Service] {
-        return annotationServices + factoryServices
-    }
+    private let sourcery: SourceryRepository
+    private let cache: CacheRepository
 
-    init(types: Types) {
-        self.types = types
+    init(sourcery: SourceryRepository, cache: CacheRepository = CacheRepository()) {
+        self.sourcery = sourcery
+        self.cache = cache
     }
 
     /// Find and return all services annotated with `inject` annotation
     func findAnnotatedServices() -> [Service] {
-        guard annotationServices.isEmpty else {
-            return annotationServices
-        }
-
-        annotationServices = types.all
-            .filter(annotated: "inject")
-            .map { service in
-                guard let initializer = service.initializers.filter(annotated: "inject").first ?? service.initializers.first else {
-                    fatalError("No init method found on `\(service.name)`. You need to declare one.")
-                }
-                let annotation = InjectAnnotation(attributes: service.annotations["inject"] as? [String: Any] ?? [:])
-
-                return Service(factory: initializer,
-                               resolvedTypeName: annotation.type,
-                               scope: annotation.scope,
-                               name: annotation.name)
-
-                
-        }
-
-        return annotationServices
+        cache.find(.service, default: sourcery.findInjectServices)
     }
 
     /// return all services found into annotated factories
     func findFactoryServices() -> [Service] {
-        guard factoryServices.isEmpty else {
-            return factoryServices
-        }
+        cache.find(.factory, default: sourcery.findFactoryServices)
+    }
 
-        factoryServices = types.all
-            .filter(annotated: "provider")
-            .flatMap { provider in provider.staticMethods }
-            .filter { method in method.callName == "instantiate" }
-            .map {
-                Service(factory: $0,
-                        resolvedTypeName: $0.returnTypeName.name,
-                        scope: nil,
-                        name: nil)
-        }
-
-        return factoryServices
+    func findAllServices() -> [Service] {
+        findAnnotatedServices() + findFactoryServices()
     }
 
     /// Return service init parameter values
     func findParameterValues(for service: Service) -> [ServiceParameterValue] {
-        service.factory.parameters.map { param in
-            if let service = annotationServices.first(where: { param.typeName.name == $0.resolvedTypeName }) {
-                return .init(param, value: .service(service))
-            }
+        let services = findAllServices()
 
-            if let service = factoryServices.first(where: { param.typeName.name == $0.resolvedTypeName }) {
+        return service.factory.parameters.map { param -> ServiceParameterValue in
+            if let service = services.first(where: { param.typeName.name == $0.resolvedTypeName }) {
                 return .init(param, value: .service(service))
             }
 
@@ -76,6 +39,7 @@ class ServiceProvider {
 
     /// Return services that need to be served (injected) to `service` variables/attributes
     func findInjectedServiceAttributes(for service: Service) throws -> [(variable: Variable, service: Service)] {
+        let services = findAllServices()
         let variables = service.factory.definedInType!.instanceVariables.filter(annotated: "inject")
 
         return try variables.map { variable in

@@ -21,7 +21,6 @@ class ServiceParamaterValueTests: QuickSpec {
             context("parameter is .service") {
                 let service = Service(factory: Method(name: "init"),
                                       resolvedTypeName: "Foo",
-                                      parameters: [:],
                                       scope: nil,
                                       name: nil)
 
