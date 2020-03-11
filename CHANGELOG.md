@@ -1,6 +1,8 @@
 # Changelog
 
 ## master
+
+## 0.5.0
 ### Added
 - Pass default value parameters to `registeredService` method definition.
 - Added `name` injection option to services. Generated method will be named `serviceNamed{Name}` instead of `registeredService`.

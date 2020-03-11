@@ -258,22 +258,9 @@ class AppProvider {
   </p>
 </details>
 
-### `provided`
-Declares a parameter as argument to define into the esolver method. Work on init and provider methods.
+### `provided` (no longer needed with 0.5.0)
+Declares a parameter as argument to define into the resolver method. Work on init and provider methods.
 
-```swift
-// sourcery: inject
-class Cat {
-  init(/* sourcery: provided */ name: String, /* sourcery: provided */ age: Int)
-}
-
-// sourcery: provider
-class AppProvider {
-    static func instantiate(resolver: Resolver, /* sourcery: provided */ name: String, /* sourcery: provided */ age: Int) -> Cat {
-        return Cat(name: String, age: Int)
-    }
-}
-```
 
 ## Caveats
 _**Generated code does not compile because of missing imports**_
