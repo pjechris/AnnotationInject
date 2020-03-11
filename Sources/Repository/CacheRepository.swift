@@ -13,6 +13,14 @@ class CacheStore<Key: Hashable> {
     private var store: Cache = [:]
 
     func find<T>(_ key: Key, default: () -> T) -> T {
-        store[key] as? T ?? `default`()
+        guard let value = store[key] as? T else {
+            let value = `default`()
+
+            store[key] = value
+
+            return value
+        }
+
+        return value
     }
 }
