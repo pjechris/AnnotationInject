@@ -35,4 +35,8 @@ class SourceryRepository {
                         name: nil)
         }
     }
+
+    func findServiceAttributes(for service: Service) -> [Variable] {
+        service.factory.definedInType!.instanceVariables.filter(annotated: "inject")
+    }
 }

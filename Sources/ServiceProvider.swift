@@ -40,9 +40,9 @@ class ServiceProvider {
     /// Return services that need to be served (injected) to `service` variables/attributes
     func findInjectedServiceAttributes(for service: Service) throws -> [(variable: Variable, service: Service)] {
         let services = findAllServices()
-        let variables = service.factory.definedInType!.instanceVariables.filter(annotated: "inject")
+        let attributes = sourcery.findServiceAttributes(for: service)
 
-        return try variables.map { variable in
+        return try attributes.map { variable in
             guard variable.isMutable else {
                 throw NSError(domain: "'\(variable.name)' needs to be mutable to be injected", code: 0, userInfo: nil)
             }
