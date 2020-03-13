@@ -11,3 +11,15 @@ extension Annotated {
         return annotations[annotation] != nil
     }
 }
+
+extension SourceryRuntime.MethodParameter {
+    func toAttribute() -> Attribute {
+        Attribute(name: name, type: TypeName(typeName.name), defaultValue: defaultValue)
+    }
+}
+
+extension SourceryRuntime.Variable {
+    func toAttribute() -> Attribute {
+        Attribute(name: name, type: TypeName(typeName.name), defaultValue: defaultValue)
+    }
+}

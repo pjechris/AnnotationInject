@@ -13,11 +13,13 @@ class ServiceProvider {
     /// Find and return all services annotated with `inject` annotation
     func findAnnotatedServices() -> [Service] {
         cache.find(.service, default: sourcery.findInjectServices)
+            .map { $0.service }
     }
 
     /// return all services found into annotated factories
     func findFactoryServices() -> [Service] {
         cache.find(.factory, default: sourcery.findFactoryServices)
+            .map { $0.service }
     }
 
     func findAllServices() -> [Service] {
@@ -43,10 +45,6 @@ class ServiceProvider {
         let attributes = sourcery.findServiceAttributes(for: service)
 
         return try attributes.map { variable in
-            guard variable.isMutable else {
-                throw NSError(domain: "'\(variable.name)' needs to be mutable to be injected", code: 0, userInfo: nil)
-            }
-
             guard let service = services.first(where: { $0.registerTypeName == variable.typeName.name || $0.registerTypeName == variable.typeName.unwrappedTypeName }) else {
                 throw NSError(domain: "No service found matching '\(variable.typeName.name)' type" , code: 0, userInfo: nil)
             }
