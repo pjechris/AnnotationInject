@@ -271,6 +271,10 @@ _**Foundation types (URLSession, NSNotificationCenter, ...) are empty (.self) in
 
 Sourcery is not yet able to find those types. As such they are seen as non existent. Workaround: Define the surrounded type inside a Provider and give it foundation types.
 
+_**Build phase is failing with no error reported**_
+
+This might be coming from Sourcery having some incompatibilities with Xcode 11.4. Workaround: Install Sourcery using Homebrew then add to the build step `SOURCERY_BINPATH=sourcery` as environment variable.
+
 _**Pods/Sourcery/bin/Sourcery.app/Contents/MacOS/Sourcery: No such file or directory**_
 
 You're probably using Sourcery as a Cocoapods dependency which unfortunately doesn't always work well. Workaround: Install Sourcery using Homebrew then add to the build step `SOURCERY_BINPATH=sourcery` as environment variable.
