@@ -61,9 +61,13 @@ class ServiceProvider {
         return factoryServices
     }
 
-    /// Return service init parameter values
+    /// Return a service init parameter values
     func findParameterValues(for service: Service) -> [ServiceParameterValue] {
-        service.factory.parameters.map { param in
+        // FIXME we should not need to call them manually
+        _ = findFactoryServices()
+        _ = findAnnotatedServices()
+        
+        return service.factory.parameters.map { param in
             if let service = annotationServices.first(where: { param.typeName.name == $0.resolvedTypeName }) {
                 return .init(param, value: .service(service))
             }
