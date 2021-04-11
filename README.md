@@ -1,6 +1,7 @@
 # AnnotationInject
 [![Build Status](https://app.bitrise.io/app/155e5b7a217bcedf/status.svg?token=_RO05oFS4f8CgnilnIf9kg&branch=master)](https://app.bitrise.io/app/155e5b7a217bcedf)
 ![Cocoapods](https://img.shields.io/static/v1?label=cocoapods&message=%E2%9C%93&color=24C28A&labelColor=444444)
+[![Twitter Follow](https://img.shields.io/twitter/follow/pjechris.svg?label=Follow%20me)](https://twitter.com/pjechris)
 
 Generate your dependency injections. Aimed for safety.
 
