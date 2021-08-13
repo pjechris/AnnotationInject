@@ -11,6 +11,10 @@ else
   SOURCERY_BINPATH="sourcery"
 fi
 
+if [ ! -f "$SCRIPTPATH/../Sources" ]; then
+    "$SCRIPTPATH/generate-annotation-template"
+fi
+
 set -x
 
 "$SOURCERY_BINPATH" --templates "$TEMPLATES" "$@"

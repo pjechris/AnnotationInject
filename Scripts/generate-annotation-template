@@ -1,5 +1,7 @@
 #! /bin/sh -e
 
+# Generate one fat Swift file in order to include it when calling Sourcery
+
 SCRIPTPATH=$(dirname "$0")
 TEMPLATES=${TEMPLATES:-"$SCRIPTPATH/../Templates"}
 SRCPATH=${SRCPATH:-"$SCRIPTPATH/../Sources"}
