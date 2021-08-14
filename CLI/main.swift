@@ -2,16 +2,18 @@ import Foundation
 
 // This executable just forward to shell script
 
-var task = Process()
-var errorPipe = Pipe()
+var sourcery = Process()
+var generateSwiftFatFile = Process()
 
-task.executableURL = URL(fileURLWithPath: "../../Scripts/annotationinject")
-task.standardError = errorPipe
-task.arguments = CommandLine.arguments
+generateSwiftFatFile = Process()
+generateSwiftFatFile.executableURL = URL(fileURLWithPath: "/bin/bash")
+generateSwiftFatFile.arguments = ["\(FileManager.default.currentDirectoryPath)/Scripts/generate-annotation-template"]
 
-try task.run()
+sourcery.executableURL = URL(fileURLWithPath: "/usr/bin/swift")
+sourcery.arguments = ["run", "sourcery"] + Array(CommandLine.arguments.dropFirst())
 
-let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+try generateSwiftFatFile.run()
+generateSwiftFatFile.waitUntilExit()
 
-exit(errorData.isEmpty ? 0 : 1)
-
+try sourcery.run()
+sourcery.waitUntilExit()
