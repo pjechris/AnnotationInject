@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Swinject/Swinject.git", from: "2.4.0"),
-        .package(url: "https://github.com/krzysztofzablocki/Sourcery", from: "0.16.2"),
+        .package(url: "https://github.com/krzysztofzablocki/Sourcery", from: "1.0.0"),
         .package(url: "https://github.com/Quick/Nimble", from: "8.0.2"),
         .package(url: "https://github.com/Quick/Quick", from: "2.1.0")
     ],
