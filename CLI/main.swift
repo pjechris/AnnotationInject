@@ -4,13 +4,19 @@ import Foundation
 
 var sourcery = Process()
 var generateSwiftFatFile = Process()
+let currentPath = FileManager.default.currentDirectoryPath
 
 generateSwiftFatFile = Process()
 generateSwiftFatFile.executableURL = URL(fileURLWithPath: "/bin/bash")
-generateSwiftFatFile.arguments = ["\(FileManager.default.currentDirectoryPath)/Scripts/generate-annotation-template"]
+generateSwiftFatFile.arguments = ["\(currentPath)/Scripts/generate-annotation-template"]
 
 sourcery.executableURL = URL(fileURLWithPath: "/usr/bin/swift")
-sourcery.arguments = ["run", "sourcery"] + Array(CommandLine.arguments.dropFirst())
+sourcery.arguments = [
+    "run",
+    "sourcery",
+    "--templates",
+    currentPath + "/Templates"
+] + Array(CommandLine.arguments.dropFirst())
 
 try generateSwiftFatFile.run()
 generateSwiftFatFile.waitUntilExit()

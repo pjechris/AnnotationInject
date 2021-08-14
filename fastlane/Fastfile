@@ -32,11 +32,10 @@ end
 
 desc "Try generate source code but using CLIs"
 lane :test_cli do
-  sh "cd .. && swift run annotationinject-cli --sources Sources --output Generated --templates Templates"
-  sh "cd .. && ./Scripts/annotationinject --sources Sources --output Generated --templates Templates"
+  sh "cd .. && swift run annotationinject-cli --sources Sources --output Generated"
 end
 
 desc "Run Swift tests on sources"
 lane :test_src do
-  sh "cd .. && swift test --enable-test-discovery"
+  sh "cd .. && swift test"
 end

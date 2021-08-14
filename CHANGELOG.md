@@ -2,6 +2,9 @@
 
 ## master
 
+### Added
+- Support for Swift Package Manager
+
 ## 0.5.0
 ### Added
 - Pass default value parameters to `registeredService` method definition.
