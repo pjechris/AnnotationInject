@@ -16,5 +16,8 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v2
 
+    - name: check swift
+      run: xcode-select -p
+
     - name: Run tests
       run: fastlane test
