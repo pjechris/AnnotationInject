@@ -1,7 +1,9 @@
 # AnnotationInject
-[![Build Status](https://app.bitrise.io/app/155e5b7a217bcedf/status.svg?token=_RO05oFS4f8CgnilnIf9kg&branch=master)](https://app.bitrise.io/app/155e5b7a217bcedf)
+
 ![Cocoapods](https://img.shields.io/static/v1?label=cocoapods&message=%E2%9C%93&color=24C28A&labelColor=444444)
-[![Twitter Follow](https://img.shields.io/twitter/follow/pjechris.svg?label=Follow%20me)](https://twitter.com/pjechris)
+![SPM](https://img.shields.io/static/v1?label=SPM&message=%E2%9C%93&color=24C28A&labelColor=444444)
+![tests](https://github.com/pjechris/AnnotationInject/actions/workflows/testing.yml/badge.svg)
+[![twitter](https://img.shields.io/badge/twitter-pjechris-1DA1F2?logo=twitter&logoColor=white)](https://twitter.com/pjechris)
 
 Generate your dependency injections. Aimed for safety.
 

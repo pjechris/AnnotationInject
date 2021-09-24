@@ -2,6 +2,8 @@
 
 ## master
 
+## 0.6.0
+
 ### Added
 - Support for Swift Package Manager
 
