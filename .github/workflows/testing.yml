@@ -1,0 +1,25 @@
+name: Run tests and build sample
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+
+    - name: Checkout repo
+      uses: actions/checkout@v2
+
+    - name: Install swift 5.4 for Sourcery
+      uses: YOCKOW/Action-setup-swift@v1
+      with:
+        swift-version: "5.4"
+
+    - name: Run tests
+      run: fastlane test

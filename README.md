@@ -83,6 +83,19 @@ let heater = resolver.registeredService() as Heater
 ## Installation
 > Note: AnnotationInject depends/relies on Sourcery for annotations declaration, and Swinject as dependency injecter.
 
+- Swift Package Manager
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/pjechris/AnnotationInject.git", from: "0.6.0")
+]
+```
+Then add a `Build phases` to your project:
+
+```shell
+swift run annotationinject-cli --sources <path to your sources> --output <path to output generated code> (--args imports=<MyLib1> -args imports=<MyLib2>>)
+```
+
 - CocoaPods
 
 Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your project:
@@ -100,10 +113,6 @@ Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your pr
 ```shell
 sourcery --templates <path to copied templates> --sources <path to your sources> --output <path to output generated code> (--args imports=<MyLib1> -args imports=<MyLib2>>)
 ```
-
-- Swift Package Manager
-
-We do not officially support Swift Package Manager as it does not have resources handling yet.
 
 ## Available annotations
 

@@ -20,17 +20,22 @@ end
 desc "Test Swift code and templates"
 lane :test do
   test_src
-  test_templates
+  test_cli
+  test_sourcery
 end
 
-desc "Test code compilation into templates and templates code generation"
-lane :test_templates do
+desc "Test code compilation into templates and Sourcery source code generation"
+lane :test_sourcery do
   sh "cd .. && ./Scripts/generate-annotation-template"
   sh "cd .. && swift run sourcery --sources Sources --output Generated --templates Templates"
+end
 
+desc "Try generate source code but using CLIs"
+lane :test_cli do
+  sh "cd .. && swift run annotationinject-cli --sources Sources --output Generated"
 end
 
 desc "Run Swift tests on sources"
 lane :test_src do
-  sh "cd .. && swift test --enable-test-discovery"
+  sh "cd .. && swift test"
 end
