@@ -19,7 +19,7 @@ jobs:
     - name: Install swift 5.4 for Sourcery
       uses: YOCKOW/Action-setup-swift@v1
       with:
-        swift-version: "5.4.0"
+        swift-version: "5.4"
 
     - name: Run tests
       run: fastlane test
