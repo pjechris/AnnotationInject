@@ -16,10 +16,10 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v2
 
-    - name: Install swift 5.4 for Sourcery
+    - name: Install swift 5.6 for Sourcery
       uses: YOCKOW/Action-setup-swift@v1
       with:
-        swift-version: "5.4"
+        swift-version: "5.6"
 
     - name: Run tests
       run: fastlane test
