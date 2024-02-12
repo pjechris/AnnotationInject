@@ -98,6 +98,16 @@ Then add a `Build phases` to your project:
 swift run annotationinject-cli --sources <path to your sources> --output <path to output generated code> (--args imports=<MyLib1> -args imports=<MyLib2>>)
 ```
 
+- Swift Package Manager (Xcode)
+
+Add AnnotationInject as dependency in Xcode then add this `Build phase` to your project:
+
+```shell
+SPM_CHECKOUT_DIR=${BUILD_DIR%Build/*}SourcePackages/checkouts/AnnotationInject
+cd $SPM_CHECKOUT_DIR
+/usr/bin/xcrun --sdk macosx swift run annotationinject-cli ...
+```
+
 - CocoaPods
 
 Add `pod AnnotationInject` to your `Podfile` and a new `Build phases` to your project:
